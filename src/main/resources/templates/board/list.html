@@ -36,6 +36,26 @@
     
     <div class="container">
         <h2>Board</h2>
+        <div>Total : <span th:text="${#lists.size(boards)}"></span></div>
+        <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Title</th>
+                <th scope="col">Written by</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="board : ${boards}">
+                <td th:text="${board.id}">1</td>
+                <td><a th:text="${board.title}" th:href="@{/board/form(id=${board.id})}">Otto</a></td>
+                <td>@mdo</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="text-right">
+            <a type="button" class="btn btn-secondary" th:href="@{/board/form}">Create</a>
+          </div>
     </div>
 
     <!-- Optional JavaScript; choose one of the two! -->
