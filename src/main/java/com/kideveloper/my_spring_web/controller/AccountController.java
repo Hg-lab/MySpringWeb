@@ -27,7 +27,14 @@ public class AccountController {
 
     @PostMapping("/register")
     public String register(User user) {
-        userService.save(user);
-        return "redirect:/";
+        try {
+            userService.save(user);
+            return "redirect:/";
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            return "redirect:/account/register";
+        }
     }
 }
+
