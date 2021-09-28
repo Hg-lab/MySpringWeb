@@ -1,5 +1,6 @@
 package com.kideveloper.my_spring_web.controller;
 
+import com.kideveloper.my_spring_web.model.Board;
 import com.kideveloper.my_spring_web.model.User;
 import com.kideveloper.my_spring_web.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,9 @@ class UserApiController {
         return repository.findById(id)
                 .map(user -> {
                     user.setBoards(newUser.getBoards());
+                    for(Board board : user.getBoards()) {
+                        board.setUser(user);
+                    }
                     return repository.save(user);
                 })
                 .orElseGet(() -> {
