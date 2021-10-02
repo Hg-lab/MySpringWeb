@@ -1,8 +1,10 @@
 package com.kideveloper.my_spring_web.controller;
 
 import com.kideveloper.my_spring_web.model.Board;
+import com.kideveloper.my_spring_web.model.QUser;
 import com.kideveloper.my_spring_web.model.User;
 import com.kideveloper.my_spring_web.repository.UserRepository;
+import com.querydsl.core.types.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,13 +21,17 @@ class UserApiController {
     private UserRepository repository;
 
     @GetMapping("/users")
-    List<User> all(@RequestParam(required = false) String method,
+    Iterable<User> all(@RequestParam(required = false) String method,
                     @RequestParam(required = false) String text) {
-        List<User> users = repository.findAll();
+        Iterable<User> users = repository.findAll();
         if(method.equals("query")) {
             users = repository.findByUsernameQuery(text);
-        }  else if(method.equals("nativeQuery")) {
+        } else if(method.equals("nativeQuery")) {
             users = repository.findByUsernameNativeQuery(text);
+        } else if(method.equals("querydsl")) {
+            QUser user = QUser.user;
+            Predicate predicate = user.username.contains(text);
+            users = repository.findAll(predicate);
         } else {
             users = repository.findAll();
         }
