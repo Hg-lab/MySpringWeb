@@ -32,6 +32,10 @@ class UserApiController {
             QUser user = QUser.user;
             Predicate predicate = user.username.contains(text);
             users = repository.findAll(predicate);
+        } else if(method.equals("querydslCustom")) {
+            users = repository.findByUsernameCustom(text);
+        } else if(method.equals("jdbc")) {
+            users = repository.findByUsernameJdbc(text);
         } else {
             users = repository.findAll();
         }
