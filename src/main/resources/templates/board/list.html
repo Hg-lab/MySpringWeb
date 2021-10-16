@@ -78,6 +78,10 @@
         </div>
     </div>
 
+    <div th:if="${message}">
+		<h2 th:text="${message}"/>
+	</div>
+
     <footer th:replace="fragments/common :: footer"></footer>
 
 
