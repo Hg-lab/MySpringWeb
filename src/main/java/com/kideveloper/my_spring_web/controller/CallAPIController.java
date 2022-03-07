@@ -7,6 +7,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,11 +21,11 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.HashMap;
 import java.util.Map;
 
-@RestController
+@Controller
 @RequestMapping("/callapi")
 public class CallAPIController {
     @GetMapping("/identity")
-    public String identity() throws JsonProcessingException {
+    public String identity(Model model) throws JsonProcessingException {
 
         HashMap<String, Object> result = new HashMap<String, Object>();
 
@@ -41,7 +43,8 @@ public class CallAPIController {
 
             String url = "https://opendart.fss.or.kr/api/company.json";
 
-            UriComponents uri = UriComponentsBuilder.fromHttpUrl(url+"?"+"crtfc_key=19aaf3c6797c1147005d8ba9673c5250d975d111&corp_code=00126380").build();
+            UriComponents uri = UriComponentsBuilder.fromHttpUrl(url+"?"
+                    +"crtfc_key=19aaf3c6797c1147005d8ba9673c5250d975d111&corp_code=00126380").build();
 
             //이 한줄의 코드로 API를 호출해 MAP타입으로 전달 받는다.
             ResponseEntity<Map> resultMap = restTemplate.exchange(uri.toString(), HttpMethod.GET, entity, Map.class);
@@ -64,8 +67,8 @@ public class CallAPIController {
             result.put("body"  , "excpetion오류");
             System.out.println(e.toString());
         }
-
-        return jsonInString;
-
+        model.addAttribute("jsonInString", jsonInString);
+//        return jsonInString;
+        return "callapi/identity";
     }
 }
