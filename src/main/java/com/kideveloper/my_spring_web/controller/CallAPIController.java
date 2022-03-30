@@ -2,28 +2,29 @@ package com.kideveloper.my_spring_web.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
 @Controller
 @RequestMapping("/callapi")
 public class CallAPIController {
+    @GetMapping("/")
+    public String redirectCallApi() {
+        return "/identity";
+    }
+
     @GetMapping("/identity")
     public String identity(Model model) throws JsonProcessingException {
 
@@ -56,6 +57,8 @@ public class CallAPIController {
             ObjectMapper mapper = new ObjectMapper();
             jsonInString = mapper.writeValueAsString(resultMap.getBody());
 
+
+
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             result.put("statusCode", e.getRawStatusCode());
             result.put("body"  , e.getStatusText());
@@ -69,6 +72,12 @@ public class CallAPIController {
         }
         model.addAttribute("jsonInString", jsonInString);
 //        return jsonInString;
+        return "callapi/identity";
+    }
+
+    @PostMapping("/identity")
+    public String identityPost(HttpServletRequest request) {
+        System.out.println("***********************Got Post API !! : " + request.getParameter("test"));
         return "callapi/identity";
     }
 }

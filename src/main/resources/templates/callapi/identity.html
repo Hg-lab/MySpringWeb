@@ -17,11 +17,14 @@
 <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" th:replace="fragments/common :: menu('Call API')">
 </nav>
 <div class="input-group mb-3 col-sm-4">
-<input type="text" class="form-control" placeholder="corp_code" aria-label="Recipient's username" aria-describedby="basic-addon2">
-    <div class="input-group-append">
-        <button class="btn btn-outline-secondary" type="submit">Submit</button>
-    </div>
+    <form action="/callapi/identity" method="POST">
+    <input type="text" name="test" class="form-control" placeholder="corp_code">
+        <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="submit">Submit</button>
+        </div>
+    </form>
 </div>
+
     <span th:text="${jsonInString}"></span>
 <footer th:replace="fragments/common :: footer"></footer>
 </body>
