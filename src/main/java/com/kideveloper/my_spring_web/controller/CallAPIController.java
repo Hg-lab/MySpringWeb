@@ -14,15 +14,16 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/callapi")
+@RequestMapping("/callapi/")
 public class CallAPIController {
     @GetMapping("/")
     public String redirectCallApi() {
-        return "/identity";
+        return "callapi/identity";
     }
 
     @GetMapping("/identity")
@@ -75,9 +76,18 @@ public class CallAPIController {
         return "callapi/identity";
     }
 
-    @PostMapping("/identity")
-    public String identityPost(HttpServletRequest request) {
-        System.out.println("***********************Got Post API !! : " + request.getParameter("test"));
+    @PostMapping(value = "/identity", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public String identityPostJson(@RequestBody Model model) {
+        System.out.println("***********************Got Post API Json !! : " + model.getAttribute("test"));
         return "callapi/identity";
     }
+
+    @PostMapping(value = "/identity", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public String identityPost(HttpServletRequest httpServletRequest, Model model) {
+        System.out.println("***********************Got Post API !! : " + httpServletRequest.getParameter("test"));
+        model.addAttribute("response",httpServletRequest.getParameter("test"));
+        return "callapi/identity";
+    }
+
 }
+
