@@ -1,6 +1,7 @@
 package com.kideveloper.my_spring_web.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.*;
@@ -63,6 +64,16 @@ public class CallAPIController {
             ObjectMapper mapper = new ObjectMapper();
             jsonInString = mapper.writeValueAsString(resultMap.getBody());
 
+            Map<String,Object> jsonMap = mapper.readValue(jsonInString, new TypeReference<Map<String,Object>>(){});
+
+            // model에는 map을 통채로 attribute로 넣으면 되어서 이부분 삭제
+//            Set<String> keySet = jsonMap.keySet();
+//            for(String key : keySet) {
+//                model.addAttribute(key, jsonMap.get(key));
+//            }
+
+            model.addAttribute("jsonMap", jsonMap);
+
             // 단건 field명으로 파싱
             JsonNode jsonNode = mapper.readTree(jsonInString);
             System.out.println(jsonNode.get("stock_name"));
@@ -79,9 +90,6 @@ public class CallAPIController {
             result.put("body"  , "excpetion오류");
             System.out.println(e.toString());
         }
-        model.addAttribute("jsonInString", jsonInString);
-
-        HashMap<String, String> rtnModelMap = new HashMap<>();
 
         return "callapi/identity";
     }

@@ -19,10 +19,20 @@
     </div>
 
     <div>
-        <div>
-            <span th:text="${response}"></span>
-        </div>
-        <span th:text="${jsonInString}"></span>
+        <table style="border: solid 1px black;">
+            <thead>
+            <tr>
+                <th>Roll No.</th>
+                <th>Score</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="jsonMap: ${jsonMap}">
+                <td th:text="${jsonMap.key}" />
+                <td th:text="${jsonMap.value}" />
+            </tr>
+            </tbody>
+        </table>
     </div>
 
 
