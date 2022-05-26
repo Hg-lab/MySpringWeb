@@ -29,7 +29,7 @@ public class CallAPIController {
     }
 
     @GetMapping("/identity")
-    public String identity(Model model) throws JsonProcessingException {
+    public String identity(Model model, @RequestParam(required = false) String corp_code) throws JsonProcessingException {
 
         HashMap<String, Object> result = new HashMap<String, Object>();
 
@@ -46,13 +46,13 @@ public class CallAPIController {
             HttpEntity<?> entity = new HttpEntity<>(header);
 
             String url = "https://opendart.fss.or.kr/api/company.json";
+            String crtfc_key = "19aaf3c6797c1147005d8ba9673c5250d975d111";
 
-            UriComponents uri = UriComponentsBuilder.fromHttpUrl(url+"?"
-                    +"crtfc_key=19aaf3c6797c1147005d8ba9673c5250d975d111&corp_code=00126380").build();
+            UriComponents uri = UriComponentsBuilder.fromHttpUrl(
+                    url+"?crtfc_key="+crtfc_key+"&corp_code="+corp_code).build();
 
             //이 한줄의 코드로 API를 호출해 MAP타입으로 전달 받는다.
             ResponseEntity<Map> resultMap = restTemplate.exchange(uri.toString(), HttpMethod.GET, entity, Map.class);
-            //resultMap = <200,{status=000, message=정상, corp_code=00126380, corp_name=삼성전자(주), corp_name_eng=SAMSUNG ELECTRONICS CO,.LTD, stock_name=삼성전자, stock_code=005930, ceo_nm=한종희, 경계현, corp_cls=Y, jurir_no=1301110006246, bizr_no=1248100998, adres=경기도 수원시 영통구  삼성로 129 (매탄동), hm_url=www.sec.co.kr, ir_url=, phn_no=031-200-1114, fax_no=031-200-7538, induty_code=264, est_dt=19690113, acc_mt=12},[Cache-Control:"no-cache", "no-store", Connection:"keep-alive", Set-Cookie:"WMONID=RrS8doMUsvE; Expires=Wed, 24-May-2023 23:6:47 GMT; Path=/", Pragma:"no-cache", Expires:"Thu, 01 Jan 1970 00:00:00 GMT", Date:"Tue, 24 May 2022 14:06:47 GMT", Content-Type:"application/json;charset=UTF-8", Transfer-Encoding:"chunked"]>
 
 
             // resultMap -> HashMap<String, Object> result 의 body에 put
@@ -73,11 +73,6 @@ public class CallAPIController {
 //            }
 
             model.addAttribute("jsonMap", jsonMap);
-
-            // 단건 field명으로 파싱
-            JsonNode jsonNode = mapper.readTree(jsonInString);
-            System.out.println(jsonNode.get("stock_name"));
-
 
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             result.put("statusCode", e.getRawStatusCode());
