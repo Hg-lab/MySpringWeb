@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kideveloper.my_spring_web.repository.CommonCodeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Controller;
@@ -23,6 +25,10 @@ import java.util.*;
 @Controller
 @RequestMapping("/callapi/")
 public class CallAPIController {
+
+    @Autowired
+    private CommonCodeRepository repository;
+
     @GetMapping("/")
     public String redirectCallApi() {
         return "callapi/identity";
@@ -46,7 +52,10 @@ public class CallAPIController {
             HttpEntity<?> entity = new HttpEntity<>(header);
 
             String url = "https://opendart.fss.or.kr/api/company.json";
-            String crtfc_key = "19aaf3c6797c1147005d8ba9673c5250d975d111";
+
+            repository.findByCommonCodeQuery("crtfc_key_dart_api");
+
+            String crtfc_key = repository.findByCommonCodeQuery("crtfc_key_dart_api");
 
             UriComponents uri = UriComponentsBuilder.fromHttpUrl(
                     url+"?crtfc_key="+crtfc_key+"&corp_code="+corp_code).build();
