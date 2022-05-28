@@ -16,8 +16,8 @@ public class CommonCode {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String com_cd;
+    private String comCd;
     @NotNull
-    private String com_cd_nm;
-    private String com_cd_val;
+    private String comCdNm;
+    private String comCdVal;
 }

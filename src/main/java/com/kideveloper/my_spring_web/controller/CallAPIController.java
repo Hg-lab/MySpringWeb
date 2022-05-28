@@ -53,9 +53,7 @@ public class CallAPIController {
 
             String url = "https://opendart.fss.or.kr/api/company.json";
 
-            repository.findByCommonCodeQuery("crtfc_key_dart_api");
-
-            String crtfc_key = repository.findByCommonCodeQuery("crtfc_key_dart_api");
+            String crtfc_key = repository.findFirstByComCd("crtfc_key_dart_api").getComCdVal();
 
             UriComponents uri = UriComponentsBuilder.fromHttpUrl(
                     url+"?crtfc_key="+crtfc_key+"&corp_code="+corp_code).build();
