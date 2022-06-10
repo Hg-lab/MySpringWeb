@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kideveloper.my_spring_web.repository.CommonCodeRepository;
+import com.kideveloper.my_spring_web.repository.CorpCodeRepository;
 import com.kideveloper.my_spring_web.service.CallCompanyJsonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -28,7 +29,7 @@ import java.util.*;
 public class CallAPIController {
 
     @Autowired
-    private CommonCodeRepository repository;
+    private CorpCodeRepository corpCodeRepository;
 
     @Autowired
     private CallCompanyJsonService callCompanyJsonService;
@@ -39,9 +40,19 @@ public class CallAPIController {
     }
 
     @GetMapping("/identity")
-    public String identity(Model model, @RequestParam(required = false) String corp_code) throws JsonProcessingException {
-        HashMap<String, Object> result = new HashMap<String, Object>(callCompanyJsonService.callCompanyJson(corp_code));
+    public String identity(Model model,
+                           @RequestParam(required = false) String corp_code,
+                           @RequestParam(required = false) String stock_code) throws JsonProcessingException {
+        HashMap<String, Object> result = new HashMap<String, Object>();
         try {
+            result = new HashMap<String, Object>(callCompanyJsonService.callCompanyJson(corp_code));
+
+            if(stock_code != null) {
+                String corp_code1 = corpCodeRepository.findByStockCode(stock_code).getCorpCode();
+                System.out.println("***********************Got stock_code !! : " + stock_code);
+                System.out.println("***********************Got stock_code !! : " + corp_code1);
+            }
+
 
             model.addAttribute("jsonMap", result);
 

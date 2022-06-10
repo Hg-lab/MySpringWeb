@@ -10,7 +10,15 @@
     </nav>
     <div class="input-group mb-3 col-sm-4">
         <form action="/callapi/identity" th:action="@{/callapi/identity}" method="GET" th:object="${String}">
-        <input type="text" name="corp_code" class="form-control" placeholder="corp_code">
+            <input type="text" name="stock_code" class="form-control" placeholder="Stock Code">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+    <div class="input-group mb-3 col-sm-4">
+        <form action="/callapi/identity" th:action="@{/callapi/identity}" method="GET" th:object="${String}">
+        <input type="text" name="corp_code" class="form-control" placeholder="Corperation Code">
             <div class="input-group-append">
                 <button class="btn btn-outline-secondary" type="submit">Submit</button>
             </div>
