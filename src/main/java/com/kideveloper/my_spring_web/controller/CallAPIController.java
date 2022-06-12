@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kideveloper.my_spring_web.repository.CommonCodeRepository;
 import com.kideveloper.my_spring_web.repository.CorpCodeRepository;
 import com.kideveloper.my_spring_web.service.CallCompanyJsonService;
+import com.kideveloper.my_spring_web.service.CallFnlttSinglAcntAllJsonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -34,6 +35,9 @@ public class CallAPIController {
     @Autowired
     private CallCompanyJsonService callCompanyJsonService;
 
+    @Autowired
+    private CallFnlttSinglAcntAllJsonService callFnlttSinglAcntAllJson;
+
     @GetMapping("/")
     public String redirectCallApi() {
         return "callapi/identity";
@@ -42,19 +46,32 @@ public class CallAPIController {
     @GetMapping("/identity")
     public String identity(Model model,
                            @RequestParam(required = false) String corp_code,
-                           @RequestParam(required = false) String stock_code) throws JsonProcessingException {
+                           @RequestParam(required = false) String stock_code,
+                           @RequestParam(required = false) String bsns_year,
+                           @RequestParam(required = false) String reprt_code,
+                           @RequestParam(required = false) String fs_div
+                           ) throws JsonProcessingException {
         HashMap<String, Object> result = new HashMap<String, Object>();
+        HashMap<String,Object> result2 = new HashMap<String,Object>();
+
         try {
-            result = new HashMap<String, Object>(callCompanyJsonService.callCompanyJson(corp_code));
 
             if(stock_code != null) {
-                String corp_code1 = corpCodeRepository.findByStockCode(stock_code).getCorpCode();
-                System.out.println("***********************Got stock_code !! : " + stock_code);
-                System.out.println("***********************Got stock_code !! : " + corp_code1);
+                corp_code = corpCodeRepository.findByStockCode(stock_code).getCorpCode();
             }
 
+            if(bsns_year !=null
+            && reprt_code!=null
+            && fs_div    !=null) {
+                result2 = new HashMap<String,Object>(callFnlttSinglAcntAllJson.callFnlttSinglAcntAllJson(corp_code,bsns_year,reprt_code,fs_div));
+            }
 
-            model.addAttribute("jsonMap", result);
+            result = new HashMap<String, Object>(callCompanyJsonService.callCompanyJson(corp_code));
+
+            if(corp_code != null) {
+                model.addAttribute("jsonMap", result);
+            }
+            model.addAttribute("jsonMap2", result2);
 
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             result.put("statusCode", e.getRawStatusCode());

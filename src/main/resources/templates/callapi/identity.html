@@ -9,22 +9,20 @@
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" th:replace="fragments/common :: menu('Call API')">
     </nav>
     <div class="input-group mb-3 col-sm-4">
+        <span>종목번호</span>
         <form action="/callapi/identity" th:action="@{/callapi/identity}" method="GET" th:object="${String}">
-            <input type="text" name="stock_code" class="form-control" placeholder="Stock Code">
-            <div class="input-group-append">
-                <button class="btn btn-outline-secondary" type="submit">Submit</button>
-            </div>
+            <input type="text" name="stock_code" class="form-control" placeholder="Stock Code"
+            value="005930">
+            <input type="text" name="corp_code" class="form-control" placeholder="Corperation Code">
+            <input type="text" name="bsns_year" class="form-control" placeholder="Business Year"
+           value="2018">
+            <input type="text" name="reprt_code" class="form-control" placeholder="Report Code"
+                   value="11011">
+            <input type="text" name="fs_div" class="form-control" placeholder="Financial Stagement"
+            value="OFS">
+            <button class="btn btn-outline-secondary" type="submit">Submit</button>
         </form>
     </div>
-    <div class="input-group mb-3 col-sm-4">
-        <form action="/callapi/identity" th:action="@{/callapi/identity}" method="GET" th:object="${String}">
-        <input type="text" name="corp_code" class="form-control" placeholder="Corperation Code">
-            <div class="input-group-append">
-                <button class="btn btn-outline-secondary" type="submit">Submit</button>
-            </div>
-        </form>
-    </div>
-
     <div>
         <div>
             <span th:text="${response}"></span>
@@ -40,6 +38,20 @@
             <tr th:each="jsonMap: ${jsonMap}">
                 <td th:text="${jsonMap.key}" />
                 <td th:text="${jsonMap.value}" />
+            </tr>
+            </tbody>
+        </table>
+        <table style="border: 12rem; margin-left:1rem;" class="table";>
+            <thead>
+            <tr>
+                <th scope="col">Fields</th>
+                <th scope="col">Data</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="jsonMap2: ${jsonMap2}">
+                <td th:text="${jsonMap2.key}" />
+                <td th:text="${jsonMap2.value}" />
             </tr>
             </tbody>
         </table>
