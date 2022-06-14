@@ -3,6 +3,7 @@ package com.kideveloper.my_spring_web.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kideveloper.my_spring_web.model.FnlttSinglAcnt;
 import com.kideveloper.my_spring_web.repository.CommonCodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,7 +67,24 @@ public class CallFnlttSinglAcntAllJsonService {
         jsonInString = mapper.writeValueAsString(resultMap.getBody());
         Map<String,Object> jsonMap = mapper.readValue(jsonInString, new TypeReference<Map<String,Object>>(){});
 
-        return jsonMap;
+        // Map<String,Map> 형태로 리턴해야함
+        // {ord, {ord=n의 재무제표}}
+        ArrayList<Object> list = (ArrayList<Object>) jsonMap.get("list");
+        HashMap<String,Object> hm = new HashMap<String,Object>();
+        String strOrd = "1";
+        for(Object o : list) {
+            hm.put(strOrd,o);
+            int strOrdToInt = Integer.parseInt(strOrd);
+            strOrdToInt++;
+            strOrd = Integer.toString(strOrdToInt);
+        }
+
+        // body 구조: message, list, status
+
+//        FnlttSinglAcnt deserializedFnlttSinglAcnt = mapper.readValue(jsonInString, FnlttSinglAcnt.class);
+
+
+        return hm;
 
     }
 

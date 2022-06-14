@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kideveloper.my_spring_web.model.FnlttSinglAcnt;
 import com.kideveloper.my_spring_web.repository.CommonCodeRepository;
 import com.kideveloper.my_spring_web.repository.CorpCodeRepository;
 import com.kideveloper.my_spring_web.service.CallCompanyJsonService;
@@ -53,6 +54,7 @@ public class CallAPIController {
                            ) throws JsonProcessingException {
         HashMap<String, Object> result = new HashMap<String, Object>();
         HashMap<String,Object> result2 = new HashMap<String,Object>();
+        FnlttSinglAcnt deserializedFnlttSinglAcnt = new FnlttSinglAcnt();
 
         try {
 
