@@ -23,10 +23,10 @@ public class CallFnlttSinglAcntAllJsonService {
     @Autowired
     private CommonCodeRepository repository;
 
-    public Map<String,Object> callFnlttSinglAcntAllJson(String corp_code,
-                                                        String bsns_year,
-                                                        String reprt_code,
-                                                        String fs_div
+    public Map<String, FnlttSinglAcnt> callFnlttSinglAcntAllJson(String corp_code,
+                                                                 String bsns_year,
+                                                                 String reprt_code,
+                                                                 String fs_div
                                                         ) throws JsonProcessingException {
         HashMap<String, Object> result = new HashMap<String, Object>();
         String jsonInString = "";
@@ -54,35 +54,43 @@ public class CallFnlttSinglAcntAllJsonService {
         //이 한줄의 코드로 API를 호출해 MAP타입으로 전달 받는다.
         ResponseEntity<Map> resultMap = restTemplate.exchange(uri.toString(), HttpMethod.GET, entity, Map.class);
 
-
-        // resultMap -> HashMap<String, Object> result 의 body에 put
-        result.put("statusCode", resultMap.getStatusCodeValue()); //http status code를 확인
-        result.put("header", resultMap.getHeaders()); //헤더 정보 확인
-        result.put("body", resultMap.getBody()); //실제 데이터 정보 확인
-
         //데이터를 제대로 전달 받았는지 확인 string형태로 파싱해줌
         ObjectMapper mapper = new ObjectMapper();
         jsonInString = mapper.writeValueAsString(resultMap.getBody());
         Map<String,Object> jsonMap = mapper.readValue(jsonInString, new TypeReference<Map<String,Object>>(){});
 
+        String jsonInStringOnlyList = mapper.writeValueAsString(resultMap.getBody().get("list"));
+        List<FnlttSinglAcnt> fnlttSinglAcntList = mapper.readValue(jsonInStringOnlyList, new TypeReference<List<FnlttSinglAcnt>>() {});
+        Map<String,FnlttSinglAcnt> hm1 = new LinkedHashMap<String,FnlttSinglAcnt>();
+        String strOrd1 = "1";
+        for(FnlttSinglAcnt f : fnlttSinglAcntList) {
+            hm1.put(strOrd1,f);
+            int strOrdToInt = Integer.parseInt(strOrd1);
+            strOrdToInt++;
+            strOrd1 = Integer.toString(strOrdToInt);
+        }
+
+
         // Map<String,Map> 형태로 리턴해야함
-        // {ord, {ord=n의 재무제표}}
+        // body 구조: message, list, status
         ArrayList<Object> list = (ArrayList<Object>) jsonMap.get("list");
         Map<String,Object> hm = new LinkedHashMap<String,Object>();
         String strOrd = "1";
         for(Object o : list) {
             hm.put(strOrd,o);
-            System.out.println("key = " + strOrd + " / " + "object = " + o.toString());
+//            System.out.println("key = " + strOrd + " / " + "object = " + o.toString());
             int strOrdToInt = Integer.parseInt(strOrd);
             strOrdToInt++;
             strOrd = Integer.toString(strOrdToInt);
+
+//            String individualRowJsonToString = o.toString();
+//            FnlttSinglAcnt fnlttSinglAcnt = mapper.readValue(individualRowJsonToString, FnlttSinglAcnt.class);
+//            System.out.println(fnlttSinglAcnt.toString());
         }
 
-        // body 구조: message, list, status
 
 
-
-        return hm;
+        return hm1;
 
     }
 
