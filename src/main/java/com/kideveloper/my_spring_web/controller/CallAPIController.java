@@ -65,7 +65,7 @@ public class CallAPIController {
             if(bsns_year !=null
             && reprt_code!=null
             && fs_div    !=null) {
-                result2 = new HashMap<String,Object>(callFnlttSinglAcntAllJson.callFnlttSinglAcntAllJson(corp_code,bsns_year,reprt_code,fs_div));
+                result2 = new LinkedHashMap<String,Object>(callFnlttSinglAcntAllJson.callFnlttSinglAcntAllJson(corp_code,bsns_year,reprt_code,fs_div));
             }
 
             result = new HashMap<String, Object>(callCompanyJsonService.callCompanyJson(corp_code));

@@ -43,15 +43,21 @@
         </table>
         <table style="border: 12rem; margin-left:1rem;" class="table";>
             <thead>
-            <tr>
-                <th scope="col">Fields</th>
-                <th scope="col">Data</th>
+            <tr th:each="jsonMap2: ${jsonMap2}" th:if="${jsonMap2Stat.index==0}">
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                    <th scope="col" th:text="${jsonMap2.value.thstrm_nm}">3기</th>
+                    <th scope="col" th:text="${jsonMap2.value.frmtrm_nm}">2기</th>
+                    <th scope="col" th:text="${jsonMap2.value.bfefrmtrm_nm}">1기</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="jsonMap2: ${jsonMap2}">
-                <td th:text="${jsonMap2.key}" />
-                <td th:text="${jsonMap2.value}" />
+                <td th:text="${jsonMap2.value.sj_nm}" />
+                <td th:text="${jsonMap2.value.account_nm}" />
+                <td th:text="${jsonMap2.value.thstrm_amount}" />
+                <td th:text="${jsonMap2.value.frmtrm_amount}" />
+                <td th:text="${jsonMap2.value.bfefrmtrm_amount}" />
             </tr>
             </tbody>
         </table>

@@ -16,9 +16,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class CallFnlttSinglAcntAllJsonService {
@@ -70,10 +68,11 @@ public class CallFnlttSinglAcntAllJsonService {
         // Map<String,Map> 형태로 리턴해야함
         // {ord, {ord=n의 재무제표}}
         ArrayList<Object> list = (ArrayList<Object>) jsonMap.get("list");
-        HashMap<String,Object> hm = new HashMap<String,Object>();
+        Map<String,Object> hm = new LinkedHashMap<String,Object>();
         String strOrd = "1";
         for(Object o : list) {
             hm.put(strOrd,o);
+            System.out.println("key = " + strOrd + " / " + "object = " + o.toString());
             int strOrdToInt = Integer.parseInt(strOrd);
             strOrdToInt++;
             strOrd = Integer.toString(strOrdToInt);
@@ -81,7 +80,6 @@ public class CallFnlttSinglAcntAllJsonService {
 
         // body 구조: message, list, status
 
-//        FnlttSinglAcnt deserializedFnlttSinglAcnt = mapper.readValue(jsonInString, FnlttSinglAcnt.class);
 
 
         return hm;
