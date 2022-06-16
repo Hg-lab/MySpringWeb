@@ -53,7 +53,13 @@
             </thead>
             <tbody>
             <tr th:each="jsonMap2: ${jsonMap2}">
-                <td th:text="${jsonMap2.value.sj_nm}" />
+                <!--문서가 중간에 하나 빠지면 에러 남-->
+                <td th:if="${jsonMap2.value.sj_nm=='재무상태표' and jsonMap2Stat.index==0}" th:attrappend="rowspan=${jsonMap2Stat.index==0? numOfSjDiv.BS : null}" th:text="${jsonMap2.value.sj_nm}" />
+                <td th:if="${jsonMap2.value.sj_nm=='손익계산서' and jsonMap2Stat.index==numOfSjDiv.BS}" th:attrappend="rowspan=${jsonMap2Stat.index==numOfSjDiv.BS? numOfSjDiv.IS : null}" th:text="${jsonMap2.value.sj_nm}" />
+                <td th:if="${jsonMap2.value.sj_nm=='포괄손익계산서' and jsonMap2Stat.index==numOfSjDiv.BS+numOfSjDiv.IS}" th:attrappend="rowspan=${jsonMap2Stat.index==numOfSjDiv.BS+numOfSjDiv.IS? numOfSjDiv.CIS : null}" th:text="${jsonMap2.value.sj_nm}" />
+                <td th:if="${jsonMap2.value.sj_nm=='현금흐름표' and jsonMap2Stat.index==numOfSjDiv.BS+numOfSjDiv.IS+numOfSjDiv.CIS}" th:attrappend="rowspan=${jsonMap2Stat.index==numOfSjDiv.BS+numOfSjDiv.IS+numOfSjDiv.CIS? numOfSjDiv.CF : null}" th:text="${jsonMap2.value.sj_nm}" />
+                <td th:if="${jsonMap2.value.sj_nm=='자본변동표' and jsonMap2Stat.index==numOfSjDiv.BS+numOfSjDiv.IS+numOfSjDiv.CIS+numOfSjDiv.CF}" th:attrappend="rowspan=${jsonMap2Stat.index==numOfSjDiv.BS+numOfSjDiv.IS+numOfSjDiv.CIS+numOfSjDiv.CF? numOfSjDiv.SCE : null}" th:text="${jsonMap2.value.sj_nm}" />
+<!--                <td th:text="${jsonMap2.value.sj_nm}" />-->
                 <td th:text="${jsonMap2.value.account_nm}" />
                 <td th:text="${jsonMap2.value.thstrm_amount}" />
                 <td th:text="${jsonMap2.value.frmtrm_amount}" />

@@ -5,6 +5,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kideveloper.my_spring_web.model.FnlttSinglAcnt;
 import com.kideveloper.my_spring_web.repository.CommonCodeRepository;
+import lombok.Data;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -20,8 +22,13 @@ import java.util.*;
 
 @Service
 public class CallFnlttSinglAcntAllJsonService {
+
     @Autowired
     private CommonCodeRepository repository;
+
+    // Front에서 rowspan을 위한 재무제표명별 갯수 static 변수
+    @Getter
+    static Map<String,Integer> numOfSjDiv;
 
     public Map<String, FnlttSinglAcnt> callFnlttSinglAcntAllJson(String corp_code,
                                                                  String bsns_year,
@@ -61,6 +68,7 @@ public class CallFnlttSinglAcntAllJsonService {
 
         String jsonInStringOnlyList = mapper.writeValueAsString(resultMap.getBody().get("list"));
         List<FnlttSinglAcnt> fnlttSinglAcntList = mapper.readValue(jsonInStringOnlyList, new TypeReference<List<FnlttSinglAcnt>>() {});
+        numOfSjDiv = getCountSjNm(fnlttSinglAcntList);
         Map<String,FnlttSinglAcnt> hm1 = new LinkedHashMap<String,FnlttSinglAcnt>();
         String strOrd1 = "1";
         for(FnlttSinglAcnt f : fnlttSinglAcntList) {
@@ -87,11 +95,16 @@ public class CallFnlttSinglAcntAllJsonService {
 //            FnlttSinglAcnt fnlttSinglAcnt = mapper.readValue(individualRowJsonToString, FnlttSinglAcnt.class);
 //            System.out.println(fnlttSinglAcnt.toString());
         }
-
-
-
         return hm1;
-
     }
 
+    // BS : 재무상태표 IS : 손익계산서 CIS : 포괄손익계산서 CF : 현금흐름표 SCE : 자본변동표
+    public Map<String,Integer> getCountSjNm(List<FnlttSinglAcnt> fnlttSinglAcntList) {
+        Map<String,Integer> countMap = new LinkedHashMap<String,Integer>();
+        for(FnlttSinglAcnt fnlttSinglAcnt : fnlttSinglAcntList) {
+            String sj_div = fnlttSinglAcnt.getSj_div();
+            countMap.put(sj_div, countMap.getOrDefault(sj_div,1)+1);
+        }
+        return countMap;
+    }
 }

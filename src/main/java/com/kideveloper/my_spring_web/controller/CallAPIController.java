@@ -66,6 +66,8 @@ public class CallAPIController {
             && reprt_code!=null
             && fs_div    !=null) {
                 result2 = new LinkedHashMap<String,Object>(callFnlttSinglAcntAllJson.callFnlttSinglAcntAllJson(corp_code,bsns_year,reprt_code,fs_div));
+                Map<String,Integer> numOfSjDiv = callFnlttSinglAcntAllJson.getNumOfSjDiv();
+                model.addAttribute("numOfSjDiv", numOfSjDiv);
             }
 
             result = new HashMap<String, Object>(callCompanyJsonService.callCompanyJson(corp_code));
