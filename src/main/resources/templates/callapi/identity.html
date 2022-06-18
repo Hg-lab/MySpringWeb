@@ -6,8 +6,6 @@
 </head>
 
 <body>
-
-
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" th:replace="fragments/common :: menu('Call API')">
     </nav>
     <div class="input-group mb-3 col-sm-4">
@@ -21,97 +19,105 @@
             <input type="text" name="reprt_code" class="form-control" placeholder="Report Code"
                    value="11011">
             <input type="text" name="fs_div" class="form-control" placeholder="Financial Stagement"
-            value="OFS">
+            value="CFS">
             <button class="btn btn-outline-secondary" type="submit">Submit</button>
         </form>
     </div>
+
+    <!-- [ Financial Statments returned table ] start-->
+    <!--BS : 재무상태표 IS : 손익계산서 CIS : 포괄손익계산서 CF : 현금흐름표 SCE : 자본변동표-->
     <div>
         <div>
-            <span th:text="${response}"></span>
+            <table style="border: 12rem; margin-left:1rem;" class="table";>
+                <thead>
+                <tr>
+                    <th scope="col">Fields</th>
+                    <th scope="col">Data</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="jsonMap: ${jsonMap}">
+                    <td th:text="${jsonMap.key}" />
+                    <td th:text="${jsonMap.value}" />
+                </tr>
+                </tbody>
+            </table>
         </div>
-        <table style="border: 12rem; margin-left:1rem;" class="table";>
-            <thead>
-            <tr>
-                <th scope="col">Fields</th>
-                <th scope="col">Data</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="jsonMap: ${jsonMap}">
-                <td th:text="${jsonMap.key}" />
-                <td th:text="${jsonMap.value}" />
-            </tr>
-            </tbody>
-        </table>
-        <table style="border: 12rem; margin-left:1rem;" class="table" name="testTbody" id="testTbody">
-            <thead>
-            <tr th:each="jsonMap2: ${jsonMap2}" th:if="${jsonMap2Stat.index==0}">
+
+        <!--[ 재무상태표 ] start -->
+        <div>
+            <table style="border: 12rem; margin-left:1rem;" class="table" name="testTbody" id="testTbody">
+                <thead>
+                <tr>
                     <th scope="col"></th>
                     <th scope="col"></th>
-                    <th scope="col" th:text="${jsonMap2.value.thstrm_nm}">3기</th>
-                    <th scope="col" th:text="${jsonMap2.value.frmtrm_nm}">2기</th>
-                    <th scope="col" th:text="${jsonMap2.value.bfefrmtrm_nm}">1기</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="jsonMap2: ${jsonMap2}">
-                <!--문서가 중간에 하나 빠지면 에러 남-->
-<!--                <td th:if="${jsonMap2.value.sj_nm=='재무상태표' and jsonMap2Stat.index==0}" th:attrappend="rowspan=${jsonMap2Stat.index==0? numOfSjDiv.BS : null}" th:text="${jsonMap2.value.sj_nm}" />-->
-<!--                <td th:if="${jsonMap2.value.sj_nm=='손익계산서' and jsonMap2Stat.index==numOfSjDiv.BS}" th:attrappend="rowspan=${jsonMap2Stat.index==numOfSjDiv.BS? numOfSjDiv.IS : null}" th:text="${jsonMap2.value.sj_nm}" />-->
-<!--                <td th:if="${jsonMap2.value.sj_nm=='포괄손익계산서' and jsonMap2Stat.index==numOfSjDiv.BS+numOfSjDiv.IS}" th:attrappend="rowspan=${jsonMap2Stat.index==numOfSjDiv.BS+numOfSjDiv.IS? numOfSjDiv.CIS : null}" th:text="${jsonMap2.value.sj_nm}" />-->
-<!--                <td th:if="${jsonMap2.value.sj_nm=='현금흐름표' and jsonMap2Stat.index==numOfSjDiv.BS+numOfSjDiv.IS+numOfSjDiv.CIS}" th:attrappend="rowspan=${jsonMap2Stat.index==numOfSjDiv.BS+numOfSjDiv.IS+numOfSjDiv.CIS? numOfSjDiv.CF : null}" th:text="${jsonMap2.value.sj_nm}" />-->
-<!--                <td th:if="${jsonMap2.value.sj_nm=='자본변동표' and jsonMap2Stat.index==numOfSjDiv.BS+numOfSjDiv.IS+numOfSjDiv.CIS+numOfSjDiv.CF}" th:attrappend="rowspan=${jsonMap2Stat.index==numOfSjDiv.BS+numOfSjDiv.IS+numOfSjDiv.CIS+numOfSjDiv.CF? numOfSjDiv.SCE : null}" th:text="${jsonMap2.value.sj_nm}" />-->
-                <td th:text="${jsonMap2.value.sj_nm}" />
-                <td th:text="${jsonMap2.value.account_nm}" />
-                <td th:text="${jsonMap2.value.thstrm_amount}" />
-                <td th:text="${jsonMap2.value.frmtrm_amount}" />
-                <td th:text="${jsonMap2.value.bfefrmtrm_amount}" />
-            </tr>
-            </tbody>
-        </table>
+                    <th scope="col" th:text="${jsonMap2.get('1').thstrm_nm}">3기</th>
+                    <th scope="col" th:text="${jsonMap2.get('1').frmtrm_nm}">2기</th>
+                    <th scope="col" th:text="${jsonMap2.get('1').bfefrmtrm_nm}">1기</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="jsonMap2: ${jsonMap2}">
+                    <div th:if="${jsonMap2.value.sj_nm=='재무상태표'}">
+                    <td th:text="${jsonMap2.value.sj_nm}" />
+                    <td th:text="${jsonMap2.value.account_nm}" />
+                    <td th:text="${jsonMap2.value.thstrm_amount}" />
+                    <td th:text="${jsonMap2.value.frmtrm_amount}" />
+                    <td th:text="${jsonMap2.value.bfefrmtrm_amount}" />
+                    </div>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <!--[ 재무상태표 ] end -->
+
+        <!--[ 자본변동표 ] start -->
+        <div>
+            <table style="border: 12rem; margin-left:1rem;" class="table" name="testTbody" id="testTbody">
+                <thead>
+                <tr>
+                    <th scope="col" rowspan="3">1</th>
+                    <th scope="col" colspan="8" style="text-align:center;">자본</th>
+                </tr>
+                <tr>
+                    <th scope="col" colspan="6" style="text-align:center;">지배기업소유주지분</th>
+                    <th scope="col" rowspan="2" style="text-align:center;">비지배지분</th>
+                    <th scope="col" rowspan="2" style="text-align:center;">자본 합계</th>
+                </tr>
+                <tr>
+                    <th scope="col" style="text-align:center;">자본금</th>
+                    <th scope="col" style="text-align:center;">주식발행초과금</th>
+                    <th scope="col" style="text-align:center;">이익잉여금</th>
+                    <th scope="col" style="text-align:center;">기타자본항목</th>
+                    <th scope="col" style="text-align:center;">매각예정분류기타자본항목</th>
+                    <th scope="col" style="text-align:center;">지배기업 소유주지분 합계</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="jsonMap2: ${jsonMap2}">
+                    <div th:if="${jsonMap2.value.sj_nm=='자본변동표'}">
+<!--                            <td th:text="${jsonMap2.key}" />-->
+<!--                            <td th:text="${jsonMap2.value}" />-->
+<!--                        <td th:text="${jsonMap2.value.sj_nm}" />-->
+<!--                        <td th:text="${jsonMap2.value.account_nm}" />-->
+<!--                        <td th:text="${jsonMap2.value.thstrm_amount}" />-->
+<!--                        <td th:text="${jsonMap2.value.frmtrm_amount}" />-->
+<!--                        <td th:text="${jsonMap2.value.bfefrmtrm_amount}" />-->
+                    </div>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <!--[ 재무상태표 ] end -->
+
     </div>
+    <!-- [ Financial Statments returned table ] end -->
 
+<footer th:replace="fragments/common :: footer"></footer>
+<script type="text/javascript" src="/js/identity.js"></script>
 
-    <footer th:replace="fragments/common :: footer"></footer>
 </body>
 
 
-<script>
 
-// 같은 값이 있는 열을 병합함
-
-$.fn.rowspan = function(colIdx, isStats) {
-    return this.each(function(){
-        var that;
-        $(`tr`, this).each(function(row) {
-            $(`td:eq(`+colIdx+`)`, this).filter(`:visible`).each(function(col) {
-                if ($(this).html() == $(that).html() &&
-                    (!isStats || isStats && $(this).prev().html() == $(that).prev().html()))
-                    {
-                        rowspan = $(that).attr("rowspan") || 1;
-                        rowspan = Number(rowspan)+1;
-
-                        $(that).attr("rowspan",rowspan);
-
-                        // do your action for the colspan cell here
-                        $(this).hide();
-
-                        //$(this).re();
-                        // do your action for the old cell here
-
-                    } else {
-                        that = this;
-                    }
-
-                // set the that if not already set
-                that = (that == null) ? this : that;
-            });
-        });
-    });
-};
-
-$(`#testTbody`).rowspan(0);
-
-
-</script>
 </html>
