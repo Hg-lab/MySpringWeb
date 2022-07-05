@@ -1,29 +1,20 @@
 package com.kideveloper.my_spring_web.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kideveloper.my_spring_web.model.FnlttSinglAcnt;
-import com.kideveloper.my_spring_web.repository.CommonCodeRepository;
 import com.kideveloper.my_spring_web.repository.CorpCodeRepository;
 import com.kideveloper.my_spring_web.service.CallCompanyJsonService;
 import com.kideveloper.my_spring_web.service.CallFnlttSinglAcntAllJsonService;
+import com.kideveloper.my_spring_web.service.ParseSCEService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.sql.Array;
 import java.util.*;
 
 @Controller
@@ -39,6 +30,9 @@ public class CallAPIController {
     @Autowired
     private CallFnlttSinglAcntAllJsonService callFnlttSinglAcntAllJson;
 
+    @Autowired
+    private ParseSCEService parseSCEService;
+
     @GetMapping("/")
     public String redirectCallApi() {
         return "callapi/identity";
@@ -52,9 +46,11 @@ public class CallAPIController {
                            @RequestParam(required = false) String reprt_code,
                            @RequestParam(required = false) String fs_div
                            ) throws JsonProcessingException {
-        HashMap<String, Object> result = new HashMap<String, Object>();
-        HashMap<String,Object> result2 = new HashMap<String,Object>();
+        HashMap<String,Object> result = new HashMap<String, Object>();
+        HashMap<String, FnlttSinglAcnt> result2 = new HashMap<String,FnlttSinglAcnt>();
         FnlttSinglAcnt deserializedFnlttSinglAcnt = new FnlttSinglAcnt();
+        Object parsedReslut = null;
+        Object columnsOfSCE = null;
 
         try {
 
@@ -65,9 +61,12 @@ public class CallAPIController {
             if(bsns_year !=null
             && reprt_code!=null
             && fs_div    !=null) {
-                result2 = new LinkedHashMap<String,Object>(callFnlttSinglAcntAllJson.callFnlttSinglAcntAllJson(corp_code,bsns_year,reprt_code,fs_div));
+                result2 = new LinkedHashMap<String,FnlttSinglAcnt>(callFnlttSinglAcntAllJson.callFnlttSinglAcntAllJson(corp_code,bsns_year,reprt_code,fs_div));
                 Map<String,Integer> numOfSjDiv = callFnlttSinglAcntAllJson.getNumOfSjDiv();
                 model.addAttribute("numOfSjDiv", numOfSjDiv);
+
+                parsedReslut = parseSCEService.parseSCE(result2,numOfSjDiv);
+                columnsOfSCE = parseSCEService.parseSCEAllColumns(result2);
             }
 
             result = new HashMap<String, Object>(callCompanyJsonService.callCompanyJson(corp_code));
@@ -75,7 +74,11 @@ public class CallAPIController {
             if(corp_code != null) {
                 model.addAttribute("jsonMap", result);
             }
+
+            System.out.println(parsedReslut);
             model.addAttribute("jsonMap2", result2);
+            model.addAttribute("parsedResult",parsedReslut);
+            model.addAttribute("columnsOfSCE",columnsOfSCE);
 
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             result.put("statusCode", e.getRawStatusCode());
