@@ -11,5 +11,5 @@ import java.util.List;
 public class StatementOfChangesInEquityBundle {
 
         private List<StatementOfChangesInEquity> statementOfChangesInEquitieList;
-        private List<String> allColumns;
+//        private List<String> allColumns;
 }

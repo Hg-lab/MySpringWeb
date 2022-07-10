@@ -10,6 +10,8 @@ import java.util.*;
 @Service
 public class ParseSCEService {
 
+    static ArrayList<String> allColumns;
+
     public Object parseSCE(Map<String,FnlttSinglAcnt> result2, Map<String,Integer> numOfSjDiv) {
 
         Map<String, StatementOfChangesInEquityBundle> parseResult = new LinkedHashMap<String,StatementOfChangesInEquityBundle>();
@@ -17,6 +19,11 @@ public class ParseSCEService {
         String orderInMap = "1";
         List<StatementOfChangesInEquity> statementOfChangesInEquities = new ArrayList<>();
         List<StatementOfChangesInEquityBundle> statementOfChangesInEquityBundles = new ArrayList<>();
+
+        allColumns = (ArrayList<String>) parseSCEAllColumns(result2);
+        allColumns.add("지배기업 소유주지분");
+        allColumns.add("비지배지분");
+        allColumns.add("연결재무제표");
 
         int ord = 1;
         for(String key : result2.keySet()) {
@@ -55,8 +62,47 @@ public class ParseSCEService {
             }
         }
 
-        System.out.println(statementOfChangesInEquityBundles.toString());
+//        System.out.println(statementOfChangesInEquityBundles.toString());
+//        organizeBundles(statementOfChangesInEquityBundles);
+        return organizeBundles(statementOfChangesInEquityBundles);
+    }
 
+    public Object organizeBundles(List<StatementOfChangesInEquityBundle> statementOfChangesInEquityBundles) {
+        for(StatementOfChangesInEquityBundle sBundle : statementOfChangesInEquityBundles) {
+//            System.out.println(sBundle.getStatementOfChangesInEquitieList().size());
+            if(sBundle.getStatementOfChangesInEquitieList().size()==allColumns.size()) {
+                continue;
+            } else {
+                List<String> thisRowColumns = new ArrayList<>();
+                for(StatementOfChangesInEquity sInstance : sBundle.getStatementOfChangesInEquitieList()) {
+                    thisRowColumns.add(sInstance.getAccount_detail());
+                }
+                for(String column : allColumns) {
+                    if(thisRowColumns.indexOf(column) == -1) {
+                        StatementOfChangesInEquity emptySCE = new StatementOfChangesInEquity(
+                                "",
+                                "",
+                                "",
+                                "",
+                                column,
+                                column,
+                                column,
+                                column
+                        );
+                        List<StatementOfChangesInEquity> sCEListAddedEmptyColumn = new ArrayList<>();
+                        sCEListAddedEmptyColumn = sBundle.getStatementOfChangesInEquitieList();
+                        sCEListAddedEmptyColumn.add(emptySCE);
+//                        sCEListAddedEmptyColumn.sort();
+                        sBundle.setStatementOfChangesInEquitieList(sCEListAddedEmptyColumn);
+
+                    }
+                }
+            }
+
+
+
+
+        }
         return statementOfChangesInEquityBundles;
     }
 
@@ -100,7 +146,7 @@ public class ParseSCEService {
             col = colList.get(colList.size() - 1).trim();
         }
 
-        col = col.replaceAll("\\,","");
+        col = col.replaceAll("\\,","").trim();
 
         return col;
 
