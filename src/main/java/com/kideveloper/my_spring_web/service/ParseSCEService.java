@@ -1,5 +1,6 @@
 package com.kideveloper.my_spring_web.service;
 
+import com.kideveloper.my_spring_web.comparator.StatementOfChangesInEquityComparator;
 import com.kideveloper.my_spring_web.model.FnlttSinglAcnt;
 import com.kideveloper.my_spring_web.model.StatementOfChangesInEquity;
 import com.kideveloper.my_spring_web.model.StatementOfChangesInEquityBundle;
@@ -85,14 +86,14 @@ public class ParseSCEService {
                                 "",
                                 "",
                                 column,
-                                column,
-                                column,
-                                column
+                                "",
+                                "",
+                                ""
                         );
                         List<StatementOfChangesInEquity> sCEListAddedEmptyColumn = new ArrayList<>();
                         sCEListAddedEmptyColumn = sBundle.getStatementOfChangesInEquitieList();
                         sCEListAddedEmptyColumn.add(emptySCE);
-//                        sCEListAddedEmptyColumn.sort();
+                        Collections.sort(sCEListAddedEmptyColumn, new StatementOfChangesInEquityComparator(allColumns));
                         sBundle.setStatementOfChangesInEquitieList(sCEListAddedEmptyColumn);
 
                     }
