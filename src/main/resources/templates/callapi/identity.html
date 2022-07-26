@@ -44,41 +44,41 @@
             </table>
         </div>
 
-<!--        &lt;!&ndash;[ 재무상태표 ] start &ndash;&gt;-->
+<!--        [ 재무상태표 ] start -->
 <!--        <div>-->
-<!--            <table style="border: 12rem; margin-left:1rem;" class="table" name="testTbody" id="testTbody">-->
-<!--                <thead>-->
-<!--                <tr>-->
-<!--                    <div th:if="${jsonMap2.get('1')!=null}">-->
-<!--                        <th scope="col"></th>-->
-<!--                        <th scope="col"></th>-->
-<!--                        <th scope="col" th:text="${jsonMap2.get('1').thstrm_nm}">3기</th>-->
-<!--                        <th scope="col" th:text="${jsonMap2.get('1').frmtrm_nm}">2기</th>-->
-<!--                        <th scope="col" th:text="${jsonMap2.get('1').bfefrmtrm_nm}">1기</th>-->
-<!--                    </div>-->
-<!--                </tr>-->
-<!--                </thead>-->
-<!--                <tbody>-->
-<!--                <tr th:each="jsonMap2: ${jsonMap2}">-->
-<!--                &lt;!&ndash; <div th:if="${jsonMap2.value.sj_div=='BS'}">&ndash;&gt;-->
-<!--                    <td th:text="${jsonMap2.value.sj_nm}" />-->
-<!--                    <td th:text="${jsonMap2.value.account_nm}" />-->
-<!--                    <td th:text="${jsonMap2.value.thstrm_amount}" />-->
-<!--                    <td th:text="${jsonMap2.value.frmtrm_amount}" />-->
-<!--                    <td th:text="${jsonMap2.value.bfefrmtrm_amount}" />-->
-<!--                &lt;!&ndash; </div>&ndash;&gt;-->
-<!--                </tr>-->
-<!--                </tbody>-->
-<!--            </table>-->
-<!--        </div>-->
-<!--        &lt;!&ndash;[ 재무상태표 ] end &ndash;&gt;-->
-<!--    -->
+            <table style="border: 12rem; margin-left:1rem;" class="table" name="testTbody" id="testTbody">
+                <thead>
+                <tr>
+                    <div th:if="${jsonMap2.get('1')!=null}">
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col" th:text="${jsonMap2.get('1').thstrm_nm}">3기</th>
+                        <th scope="col" th:text="${jsonMap2.get('1').frmtrm_nm}">2기</th>
+                        <th scope="col" th:text="${jsonMap2.get('1').bfefrmtrm_nm}">1기</th>
+                    </div>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="jsonMap2: ${jsonMap2}">
+                <div th:if="${jsonMap2.value.sj_div=='BS'}">
+                    <td th:text="${jsonMap2.value.sj_nm}" />
+                    <td th:text="${jsonMap2.value.account_nm}" />
+                    <td th:text="${jsonMap2.value.thstrm_amount}" />
+                    <td th:text="${jsonMap2.value.frmtrm_amount}" />
+                    <td th:text="${jsonMap2.value.bfefrmtrm_amount}" />
+                </div>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <!--[ 재무상태표 ] end -->
+
         <!--[ 자본변동표 ] start -->
         <div>
             <table style="border: 12rem; margin-left:1rem;" class="table">
                 <thead>
                     <tr>
-                        <th scope="col" rowspan="3">1</th>
+                        <th scope="col" rowspan="3"></th>
                         <th scope="col" colspan="8" style="text-align:center;">자본</th>
                     </tr>
                     <tr>
@@ -93,9 +93,9 @@
                 </thead>
                 <tbody>
                     <tr th:each="sce: ${parsedResult}">
-                        <td>제목</td>
+                        <td th:text="${sce.statementOfChangesInEquitieList.get(0).account_nm}">1</td>
                         <div th:each="sce: ${sce.statementOfChangesInEquitieList}">
-                            <td th:if="${sce.account_detail == '주식발행초과금'}" th:text="${sce.bfefrmtrm_amount}">1</td>
+                            <td th:if="${sce.account_detail=='주식발행초과금'}" th:text="${sce.bfefrmtrm_amount}">1</td>
                             <td th:if="${sce.account_detail=='자본금'}" th:text="${sce.bfefrmtrm_amount}">1</td>
                             <td th:if="${sce.account_detail=='이익잉여금'}" th:text="${sce.bfefrmtrm_amount}">1</td>
                             <td th:if="${sce.account_detail=='매각예정분류기타자본항목'}" th:text="${sce.bfefrmtrm_amount}">1</td>
@@ -103,26 +103,24 @@
                             <td th:if="${sce.account_detail=='지배기업 소유주지분'}" th:text="${sce.bfefrmtrm_amount}">1</td>
                             <td th:if="${sce.account_detail=='비지배지분'}" th:text="${sce.bfefrmtrm_amount}">1</td>
                             <td th:if="${sce.account_detail=='연결재무제표'}" th:text="${sce.bfefrmtrm_amount}">1</td>
-<!--                            <td th:if="${sce.bfefrmtrm_amount!=null}" th:text="${sce.account_detail}">1</td>-->
-<!--                            <td th:unless="${sce.bfefrmtrm_amount!=null}">0</td>-->
                         </div>
                     </tr>
                     <tr th:each="sce: ${parsedResult}">
-                        <td>제목</td>
+                        <td th:text="${sce.statementOfChangesInEquitieList.get(0).account_nm}">1</td>
                         <div th:each="sce: ${sce.statementOfChangesInEquitieList}">
                         <td th:if="${sce.bfefrmtrm_amount!=null}" th:text="${sce.bfefrmtrm_amount}">1</td>
                         <td th:unless="${sce.bfefrmtrm_amount!=null}">0</td>
                         </div>
                     </tr>
                     <tr th:each="sce: ${parsedResult}">
-                        <td>제목</td>
+                        <td th:text="${sce.statementOfChangesInEquitieList.get(0).account_nm}">1</td>
                         <div th:each="sce: ${sce.statementOfChangesInEquitieList}">
                         <td th:if="${sce.frmtrm_amount!=null}" th:text="${sce.frmtrm_amount}">1</td>
                         <td th:unless="${sce.frmtrm_amount!=null}">0</td>
                         </div>
                     </tr>
                     <tr th:each="sce: ${parsedResult}">
-                        <td>제목</td>
+                        <td th:text="${sce.statementOfChangesInEquitieList.get(0).account_nm}">1</td>
                         <div th:each="sce: ${sce.statementOfChangesInEquitieList}">
                         <td th:if="${sce.thstrm_amount!=null}" th:text="${sce.thstrm_amount}">1</td>
                         <td th:unless="${sce.thstrm_amount!=null}">0</td>

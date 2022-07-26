@@ -68,9 +68,11 @@ public class ParseSCEService {
         return organizeBundles(statementOfChangesInEquityBundles);
     }
 
+    // Add dummy(empty) data for blank cell in template.
     public Object organizeBundles(List<StatementOfChangesInEquityBundle> statementOfChangesInEquityBundles) {
         for(StatementOfChangesInEquityBundle sBundle : statementOfChangesInEquityBundles) {
 //            System.out.println(sBundle.getStatementOfChangesInEquitieList().size());
+            // sBundle size equals columns number means that we don't need add dummy data.
             if(sBundle.getStatementOfChangesInEquitieList().size()==allColumns.size()) {
                 continue;
             } else {
@@ -84,7 +86,7 @@ public class ParseSCEService {
                                 "",
                                 "",
                                 "",
-                                "",
+                                sBundle.getStatementOfChangesInEquitieList().get(0).getAccount_nm(),
                                 column,
                                 "",
                                 "",
