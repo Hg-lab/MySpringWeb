@@ -13,4 +13,10 @@ public class TableController {
     public String tables() {
         return "tables/tables";
     }
+
+    @GetMapping("/financial-statements")
+    public String financialStatement() {
+        return "tables/financial-statements";
+    }
+
 }
