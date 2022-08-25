@@ -1,82 +1,80 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
-
 <head th:replace="fragments/common :: head('Board')">
     <title>Call API</title>
 </head>
-
-<body>
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" th:replace="fragments/common :: menu('Call API')">
-    </nav>
-    <div class="input-group mb-3 col-sm-4">
-        <span>종목번호</span>
-        <form action="/callapi/identity" th:action="@{/callapi/identity}" method="GET" th:object="${String}">
-            <input type="text" name="stock_code" class="form-control" placeholder="Stock Code"
-            value="005930">
-            <input type="text" name="corp_code" class="form-control" placeholder="Corperation Code">
-            <input type="text" name="bsns_year" class="form-control" placeholder="Business Year"
-           value="2021">
-            <input type="text" name="reprt_code" class="form-control" placeholder="Report Code"
-                   value="11011">
-            <input type="text" name="fs_div" class="form-control" placeholder="Financial Stagement"
-            value="CFS">
-            <button class="btn btn-outline-secondary" type="submit">Submit</button>
-        </form>
-    </div>
-
-    <!-- [ Financial Statments returned table ] start-->
-    <!--BS : 재무상태표 IS : 손익계산서 CIS : 포괄손익계산서 CF : 현금흐름표 SCE : 자본변동표-->
-    <div>
-        <div class="right_col"  role="main">
-            <table id="datatable-buttons" style="border: 12rem; margin-left:1rem;" class="table">
-                <thead>
-                <tr>
-                    <th scope="col">Fields</th>
-                    <th scope="col">Data</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="jsonMap: ${jsonMap}">
-                    <td th:text="${jsonMap.key}" />
-                    <td th:text="${jsonMap.value}" />
-                </tr>
-                </tbody>
-            </table>
-        </div>
-
-<!--        [ 재무상태표 ] start -->
-<!--        <div>-->
-            <table style="border: 12rem; margin-left:1rem;" class="table" name="testTbody" id="testTbody">
-                <thead>
-                <tr>
-                    <div th:if="${jsonMap2.get('1')!=null}">
-                        <th scope="col"></th>
-                        <th scope="col"></th>
-                        <th scope="col" th:text="${jsonMap2.get('1').thstrm_nm}">3기</th>
-                        <th scope="col" th:text="${jsonMap2.get('1').frmtrm_nm}">2기</th>
-                        <th scope="col" th:text="${jsonMap2.get('1').bfefrmtrm_nm}">1기</th>
-                    </div>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="jsonMap2: ${jsonMap2}">
-                <div th:if="${jsonMap2.value.sj_div=='BS'}">
-                    <td th:text="${jsonMap2.value.sj_nm}" />
-                    <td th:text="${jsonMap2.value.account_nm}" />
-                    <td th:text="${jsonMap2.value.thstrm_amount}" />
-                    <td th:text="${jsonMap2.value.frmtrm_amount}" />
-                    <td th:text="${jsonMap2.value.bfefrmtrm_amount}" />
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <!-- <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" th:replace="fragments/common :: menu('Call API')">
+           </nav> -->
+        <div th:replace="fragments/common :: menu('Get DART DOCS')"></div>
+        <div class="right_col" role="main">
+            <div>
+                <span>종목번호</span>
+                <form action="/callapi/identity" th:action="@{/callapi/identity}" method="GET" th:object="${String}">
+                    <input type="text" name="stock_code" class="form-control" placeholder="Stock Code"
+                           value="005930">
+                    <input type="text" name="corp_code" class="form-control" placeholder="Corperation Code">
+                    <input type="text" name="bsns_year" class="form-control" placeholder="Business Year"
+                           value="2021">
+                    <input type="text" name="reprt_code" class="form-control" placeholder="Report Code"
+                           value="11011">
+                    <input type="text" name="fs_div" class="form-control" placeholder="Financial Stagement"
+                           value="CFS">
+                    <button class="btn btn-outline-secondary" type="submit">Submit</button>
+                </form>
+            </div>
+            <!-- [ Financial Statments returned table ] start-->
+            <!--BS : 재무상태표 IS : 손익계산서 CIS : 포괄손익계산서 CF : 현금흐름표 SCE : 자본변동표-->
+            <div>
+                <div>
+                    <table style="border: 12rem; margin-left:1rem;" class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Fields</th>
+                            <th scope="col">Data</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="jsonMap: ${jsonMap}">
+                            <td th:text="${jsonMap.key}" />
+                            <td th:text="${jsonMap.value}" />
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <!--[ 재무상태표 ] end -->
-
-        <!--[ 자본변동표 ] start -->
-        <div>
-            <table style="border: 12rem; margin-left:1rem;" class="table">
-                <thead>
+                <!--        [ 재무상태표 ] start -->
+                <table style="border: 12rem; margin-left:1rem;" class="table" id="testTbody">
+                    <thead>
+                    <tr>
+                        <div th:if="${jsonMap2.get('1')!=null}">
+                            <th scope="col"></th>
+                            <th scope="col"></th>
+                            <th scope="col" th:text="${jsonMap2.get('1').thstrm_nm}">3기</th>
+                            <th scope="col" th:text="${jsonMap2.get('1').frmtrm_nm}">2기</th>
+                            <th scope="col" th:text="${jsonMap2.get('1').bfefrmtrm_nm}">1기</th>
+                        </div>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="jsonMap2: ${jsonMap2}">
+                        <div th:if="${jsonMap2.value.sj_div=='BS'}">
+                            <td th:text="${jsonMap2.value.sj_nm}" />
+                            <td th:text="${jsonMap2.value.account_nm}" />
+                            <td th:text="${jsonMap2.value.thstrm_amount}" />
+                            <td th:text="${jsonMap2.value.frmtrm_amount}" />
+                            <td th:text="${jsonMap2.value.bfefrmtrm_amount}" />
+                        </div>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!--[ 재무상태표 ] end -->
+            <!--[ 자본변동표 ] start -->
+            <div>
+                <table class="table" style="width:100%" id="datatable-buttons" >
+                    <thead>
                     <tr>
                         <th scope="col" rowspan="3"></th>
                         <th scope="col" colspan="8" style="text-align:center;">자본</th>
@@ -90,8 +88,8 @@
                         <th scope="col" style="text-align:center;" th:each="column:${columnsOfSCE}" th:text="${column}">자본금</th>
                         <th scope="col" style="text-align:center;">지배기업 소유주지분 합계</th>
                     </tr>
-                </thead>
-                <tbody>
+                    </thead>
+                    <tbody>
                     <tr th:each="sce: ${parsedResult}">
                         <td th:text="${sce.statementOfChangesInEquitieList.get(0).account_nm}">1</td>
                         <div th:each="sce: ${sce.statementOfChangesInEquitieList}">
@@ -108,56 +106,51 @@
                     <tr th:each="sce: ${parsedResult}">
                         <td th:text="${sce.statementOfChangesInEquitieList.get(0).account_nm}">1</td>
                         <div th:each="sce: ${sce.statementOfChangesInEquitieList}">
-                        <td th:if="${sce.bfefrmtrm_amount!=null}" th:text="${sce.bfefrmtrm_amount}">1</td>
-                        <td th:unless="${sce.bfefrmtrm_amount!=null}">0</td>
+                            <td th:if="${sce.bfefrmtrm_amount!=null}" th:text="${sce.bfefrmtrm_amount}">1</td>
+                            <td th:unless="${sce.bfefrmtrm_amount!=null}">0</td>
                         </div>
                     </tr>
                     <tr th:each="sce: ${parsedResult}">
                         <td th:text="${sce.statementOfChangesInEquitieList.get(0).account_nm}">1</td>
                         <div th:each="sce: ${sce.statementOfChangesInEquitieList}">
-                        <td th:if="${sce.frmtrm_amount!=null}" th:text="${sce.frmtrm_amount}">1</td>
-                        <td th:unless="${sce.frmtrm_amount!=null}">0</td>
+                            <td th:if="${sce.frmtrm_amount!=null}" th:text="${sce.frmtrm_amount}">1</td>
+                            <td th:unless="${sce.frmtrm_amount!=null}">0</td>
                         </div>
                     </tr>
                     <tr th:each="sce: ${parsedResult}">
                         <td th:text="${sce.statementOfChangesInEquitieList.get(0).account_nm}">1</td>
                         <div th:each="sce: ${sce.statementOfChangesInEquitieList}">
-                        <td th:if="${sce.thstrm_amount!=null}" th:text="${sce.thstrm_amount}">1</td>
-                        <td th:unless="${sce.thstrm_amount!=null}">0</td>
+                            <td th:if="${sce.thstrm_amount!=null}" th:text="${sce.thstrm_amount}">1</td>
+                            <td th:unless="${sce.thstrm_amount!=null}">0</td>
                         </div>
                     </tr>
-                </tbody>
-            </table>
-
-            <!---->
-
-            <table style="border: 12rem; margin-left:1rem;" class="table">
-                <thead>
-                <tr>
-                    <th scope="col">k</th>
-                    <th scope="col">v</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="jsonMap2: ${jsonMap2}">
-                    <div th:if="${jsonMap2.value.sj_div=='SCE'}">
-                        <td th:text="${jsonMap2.key}" />
-                        <td th:text="${jsonMap2.value}" />
-                    </div>
-                </tr>
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+                <!---->
+                <table style="border: 12rem; margin-left:1rem;" class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">k</th>
+                        <th scope="col">v</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="jsonMap2: ${jsonMap2}">
+                        <div th:if="${jsonMap2.value.sj_div=='SCE'}">
+                            <td th:text="${jsonMap2.key}" />
+                            <td th:text="${jsonMap2.value}" />
+                        </div>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!--[ 재무상태표 ] end -->
         </div>
-        <!--[ 재무상태표 ] end -->
-
-    </div>
+    
     <!-- [ Financial Statments returned table ] end -->
-
-<footer th:replace="fragments/common :: footer"></footer>
-<script type="text/javascript" src="/js/identity.js"></script>
-
+        <footer th:replace="fragments/common :: footer"></footer>
+        <script type="text/javascript" src="/js/identity.js"></script>
+    </div>
+</div>
 </body>
-
-
-
 </html>
