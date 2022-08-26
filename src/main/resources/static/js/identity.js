@@ -29,4 +29,30 @@ $.fn.rowspan = function(colIdx, isStats) {
     });
 };
 
-$(`#testTbody`).rowspan(0);
+$('#testTbody').rowspan(0);
+
+$(document).ready(function() {
+    $('#testTbody').DataTable( {
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel'
+        ],
+        paging: false,
+        ordering: false,
+        info: false,
+        searching: false,
+    } );
+} );
+
+$(document).ready(function() {
+    $('#SCETable').DataTable( {
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel'
+        ],
+        paging: false,
+        ordering: false,
+        info: false,
+        searching: false,
+    } );
+} );

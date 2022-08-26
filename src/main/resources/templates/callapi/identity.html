@@ -47,25 +47,21 @@
                 <!--        [ 재무상태표 ] start -->
                 <table style="border: 12rem; margin-left:1rem;" class="table" id="testTbody">
                     <thead>
-                    <tr>
-                        <div th:if="${jsonMap2.get('1')!=null}">
+                    <tr th:if="${jsonMap2.get('1')!=null}">
                             <th scope="col"></th>
                             <th scope="col"></th>
                             <th scope="col" th:text="${jsonMap2.get('1').thstrm_nm}">3기</th>
                             <th scope="col" th:text="${jsonMap2.get('1').frmtrm_nm}">2기</th>
                             <th scope="col" th:text="${jsonMap2.get('1').bfefrmtrm_nm}">1기</th>
-                        </div>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="jsonMap2: ${jsonMap2}">
-                        <div th:if="${jsonMap2.value.sj_div=='BS'}">
+                    <tr th:each="jsonMap2: ${jsonMap2}" th:if="${jsonMap2.value.sj_div=='BS'}">
                             <td th:text="${jsonMap2.value.sj_nm}" />
                             <td th:text="${jsonMap2.value.account_nm}" />
                             <td th:text="${jsonMap2.value.thstrm_amount}" />
                             <td th:text="${jsonMap2.value.frmtrm_amount}" />
                             <td th:text="${jsonMap2.value.bfefrmtrm_amount}" />
-                        </div>
                     </tr>
                     </tbody>
                 </table>
@@ -73,7 +69,7 @@
             <!--[ 재무상태표 ] end -->
             <!--[ 자본변동표 ] start -->
             <div>
-                <table class="table" style="width:100%" id="datatable-buttons" >
+                <table id="SCETable" class="table" style="width:100%" >
                     <thead>
                     <tr>
                         <th scope="col" rowspan="3"></th>
