@@ -29,6 +29,7 @@
             <!--BS : 재무상태표 IS : 손익계산서 CIS : 포괄손익계산서 CF : 현금흐름표 SCE : 자본변동표-->
             <div>
                 <div>
+                    <button class="exportToExcel" onclick="clickExport()">Export to XLS</button>
                     <table style="border: 12rem; margin-left:1rem;" class="table">
                         <thead>
                         <tr>
@@ -44,6 +45,7 @@
                         </tbody>
                     </table>
                 </div>
+
                 <!--        [ 재무상태표 ] start -->
                 <table style="border: 12rem; margin-left:1rem;" class="table" id="testTbody">
                     <thead>
@@ -69,7 +71,7 @@
             <!--[ 재무상태표 ] end -->
             <!--[ 자본변동표 ] start -->
             <div>
-                <table id="SCETable" class="table" style="width:100%" >
+                <table  id="target" class="table" style="width:100%" >
                     <thead>
                     <tr>
                         <th scope="col" rowspan="3"></th>
@@ -146,7 +148,7 @@
     <!-- [ Financial Statments returned table ] end -->
         <footer th:replace="fragments/common :: footer"></footer>
         <script type="text/javascript" src="/js/identity.js"></script>
-    </div>
-</div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script src="https://rawgit.com/unconditional/jquery-table2excel/master/src/jquery.table2excel.js"></script></div>
 </body>
 </html>

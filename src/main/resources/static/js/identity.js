@@ -56,3 +56,15 @@ $(document).ready(function() {
         searching: false,
     } );
 } );
+
+function clickExport() {
+		$("#target").table2excel({
+			exclude: ".excludeThisClass",
+			name: "Excel Document Name",
+			filename: "report" +'.xls', //확장자를 여기서 붙여줘야한다.
+//			fileext: ".xls",
+//			exclude_img: true,
+//			exclude_links: true,
+//			exclude_inputs: true
+		});
+}
