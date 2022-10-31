@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 @Controller
-@RequestMapping("/callapi/")
+@RequestMapping("/callapi1/")
 public class CallAPIController {
 
     @Autowired

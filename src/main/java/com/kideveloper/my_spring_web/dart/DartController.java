@@ -41,8 +41,10 @@ public class DartController {
         dartRequestDTO = new DartRequestDTO(corpCode, stockCode, businessYear, reportCode, fsDiv);
         Response response = dartService.callApi(dartRequestDTO);
 
-
         model.addAttribute("BS", response.get(DocType.BS));
+        model.addAttribute("IS", response.get(DocType.IS));
+        model.addAttribute("CIS", response.get(DocType.CIS));
+        model.addAttribute("CF", response.get(DocType.CF));
 
 
 

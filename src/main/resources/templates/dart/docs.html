@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Hello</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<p th:text="'columns - ' + ${BS.columns}">반갑습니다. Welcome!!</p>
+<p th:text="'rows - ' + ${BS.rows}">반갑습니다. Welcome!!</p>
+<p th:text="'cells - ' + ${BS.cells}">반갑습니다. Welcome!!</p>
+<table style="border: 12rem; margin-left:1rem;" class="table" id="testTbody">
+  <thead>
+    <th scope="col"></th>
+    <th scope="col"></th>
+    <th scope="col" th:text="${BS.columns.get(0).getColumnName()}">3기</th>
+    <th scope="col" th:text="${BS.columns.get(1).getColumnName()}">2기</th>
+    <th scope="col" th:text="${BS.columns.get(2).getColumnName()}">1기</th>
+  </thead>
+  <tbody>
+
+<!--  <tr th:each="jsonMap2: ${jsonMap2}" th:if="${jsonMap2.value.sj_div=='BS'}">-->
+<!--    <td th:text="${jsonMap2.value.sj_nm}" />-->
+<!--    <td th:text="${jsonMap2.value.account_nm}" />-->
+<!--    <td th:text="${jsonMap2.value.thstrm_amount}" />-->
+<!--    <td th:text="${jsonMap2.value.frmtrm_amount}" />-->
+<!--    <td th:text="${jsonMap2.value.bfefrmtrm_amount}" />-->
+  </tr>
+  </tbody>
+</table>
+</body>
+</html>
