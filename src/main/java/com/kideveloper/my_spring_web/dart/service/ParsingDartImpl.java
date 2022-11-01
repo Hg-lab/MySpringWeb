@@ -2,10 +2,7 @@ package com.kideveloper.my_spring_web.dart.service;
 
 import com.kideveloper.my_spring_web.dart.dto.doc.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 // request scope
 public class ParsingDartImpl implements ParsingDart {
@@ -18,6 +15,9 @@ public class ParsingDartImpl implements ParsingDart {
     private Doc StatementChangeInEquity = new Doc(DocType.SCE);
 
     private Response response = new Response();
+
+    private Set<String> sceColumSet = new HashSet<>();
+
     // write docs
     @Override
     public Response writeDocs(List<LinkedHashMap<String, String>> list) {
@@ -27,11 +27,18 @@ public class ParsingDartImpl implements ParsingDart {
         for (LinkedHashMap<String, String> dataMap : list) {
             DocType docType = DocType.valueOf(dataMap.get("sj_div"));
 
-            if(docType == DocType.SCE)
+            if(docType == DocType.SCE) {
                 writeSCE(dataMap);
-            else
+            }
+
+            else {
                 writeFinanceState(dataMap);
+            }
+
         }
+
+        putSCEColumns();
+
 
         return response;
     }
@@ -44,6 +51,8 @@ public class ParsingDartImpl implements ParsingDart {
         response.put(StatementChangeInEquity.getDocType(), StatementChangeInEquity);
     }
 
+
+    // TODO: 2022/11/01 refactoring
     private void writeFinanceState(LinkedHashMap<String, String> dataMap) {
         DocType docType = DocType.valueOf(dataMap.get("sj_div"));
             // TODO: 2022/10/30 set Columns
@@ -96,10 +105,42 @@ public class ParsingDartImpl implements ParsingDart {
         response.get(docType).getCells().add(fromCell);
         response.get(docType).getCells().add(beforeFromCell);
 
+        row.getCells().add(thisCell);
+        row.getCells().add(fromCell);
+        row.getCells().add(beforeFromCell);
+
     }
 
     private void writeSCE(LinkedHashMap<String, String> dataMap) {
+        DocType docType = DocType.valueOf(dataMap.get("sj_div"));
 
+        String accountDetail = dataMap.get("account_detail");
+        accountDetail = accountDetail.replaceAll("[\\[\\w\\]]", "");
+        accountDetail = accountDetail.replaceAll("\\s\\|", "\\|");
+        List<String> colList = new ArrayList<>();
+        colList = Arrays.asList(accountDetail.split("\\|"));
+        if (colList.size() >= 2) {
+            accountDetail = colList.get(colList.size() - 1).trim();
+        }
 
+        System.out.println("accountDetail = " + accountDetail);
+
+        sceColumSet.add(accountDetail);
+        // generating Row
+        Row row = Row.builder()
+                .docType(DocType.valueOf(dataMap.get("sj_div")))
+                .order(Integer.valueOf(dataMap.get("ord")))
+                .rowName(dataMap.get("account_nm")).build();
+        response.get(docType).getRows().add(row);
+//        System.out.println("dataMap = " + dataMap);
+
+    }
+
+    private void putSCEColumns() {
+        for (String s : sceColumSet) {
+            response.get(DocType.SCE).getColumns().add(Column.builder()
+                    .columnName(s)
+                    .build());
+        }
     }
 }

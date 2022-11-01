@@ -45,6 +45,7 @@ public class DartController {
         model.addAttribute("IS", response.get(DocType.IS));
         model.addAttribute("CIS", response.get(DocType.CIS));
         model.addAttribute("CF", response.get(DocType.CF));
+        model.addAttribute("SCE", response.get(DocType.SCE));
 
 
 
