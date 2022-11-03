@@ -8,12 +8,24 @@
 <!--<p th:text="'columns - ' + ${BS.columns}">반갑습니다. Welcome!!</p>-->
 <!--<p th:text="'rows - ' + ${BS.rows}">반갑습니다. Welcome!!</p>-->
 <!--<p th:text="'cells - ' + ${BS.cells}">반갑습니다. Welcome!!</p>-->
-
-<table style="border: 12rem; margin-left:1rem;" class="table" id="testTbody">
+<style>
+  table {
+    width: 75%;
+    /*border: 1px solid #444444;*/
+    margin-left:1rem;
+  }
+  th, td {
+    border: 1px solid #444444;
+  }
+</style>
+<table class="table">
   <thead>
-  <th scope="col"></th>
-  <th scope="col"></th>
-  <th scope="col" th:each="column: ${SCE.columns}" th:text="${column.getColumnName()}">3기</th>
+    <tr th:each="depth: ${#numbers.sequence(0,3)}">
+      <th scope="col"></th>
+      <th scope="col"></th>
+      <th scope="col" th:each="column: ${SCE.columns}" th:if="${column.getDepth()==depth}" th:text="${column.getColumnName()}" th:attrappend="colspan=${column.getChildColumns().size()}">3기</th>
+      <th scope="col" th:if="${depth}==2">합계</th>
+    </tr>
   </thead>
   <tbody>
   <tr th:each="row : ${SCE.rows}">

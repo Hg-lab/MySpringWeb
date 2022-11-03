@@ -2,22 +2,23 @@ package com.kideveloper.my_spring_web.dart.service;
 
 import com.kideveloper.my_spring_web.dart.dto.doc.*;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.*;
 
 // request scope
 public class ParsingDartImpl implements ParsingDart {
 
+    // TODO: 2022/11/02 Doc 객체들 Factory method 로 의존성 관리
     private Doc BusinessStatement = new Doc(DocType.BS);
     private Doc IncomeStatement = new Doc(DocType.IS);
     private Doc CommonIncomeStatement = new Doc(DocType.CIS);
     private Doc CashFlow = new Doc(DocType.CF);
-
     private Doc StatementChangeInEquity = new Doc(DocType.SCE);
-
     private Response response = new Response();
-
-    private Set<String> sceColumSet = new HashSet<>();
-
+    private Set<Column> sceColumSet = new LinkedHashSet<>();
+    private Set<Row> sceRowSet = new LinkedHashSet<>();
+    private List<Cell> sceAllCellList = new LinkedList<>();
+    
     // write docs
     @Override
     public Response writeDocs(List<LinkedHashMap<String, String>> list) {
@@ -38,7 +39,7 @@ public class ParsingDartImpl implements ParsingDart {
         }
 
         putSCEColumns();
-
+        putSCERows();
 
         return response;
     }
@@ -114,33 +115,70 @@ public class ParsingDartImpl implements ParsingDart {
     private void writeSCE(LinkedHashMap<String, String> dataMap) {
         DocType docType = DocType.valueOf(dataMap.get("sj_div"));
 
+        // TODO: 2022/11/02 정규표현식으로 파
         String accountDetail = dataMap.get("account_detail");
         accountDetail = accountDetail.replaceAll("[\\[\\w\\]]", "");
         accountDetail = accountDetail.replaceAll("\\s\\|", "\\|");
-        List<String> colList = new ArrayList<>();
-        colList = Arrays.asList(accountDetail.split("\\|"));
-        if (colList.size() >= 2) {
-            accountDetail = colList.get(colList.size() - 1).trim();
+        List<String> columnNameList = Arrays.asList(accountDetail.split("\\|"));
+        int depth = columnNameList.size();
+        if (depth >= 2) {
+            accountDetail = columnNameList.get(columnNameList.size() - 1);
         }
 
-        System.out.println("accountDetail = " + accountDetail);
+        // Build Column
+        String columnName = accountDetail.trim();
+//        System.out.println("accountDetail = " + accountDetail + " / depth = " + depth + " / colList = "+ colList);
+        Column column = Column.builder()
+                .columnName(columnName)
+                .order(Integer.valueOf(dataMap.get("ord")))
+//                .rootColumn(null)
+//                .parentColumn(null)
+                .depth(depth)
+                .build();
+        if(!sceColumSet.contains(column)) sceColumSet.add(column);
 
-        sceColumSet.add(accountDetail);
-        // generating Row
+        String check = dataMap.get("account_id") + " / " +
+                        dataMap.get("account_nm") + " / " +
+                        accountDetail + " / " +
+                        dataMap.get("thstrm_amount") + " / " +
+                        dataMap.get("frmtrm_amount") + " / " +
+                        dataMap.get("bfefrmtrm_amount") + " / " +
+                        dataMap.get("ord");
+
+        System.out.println(check);
+
+        // Build Row
         Row row = Row.builder()
                 .docType(DocType.valueOf(dataMap.get("sj_div")))
                 .order(Integer.valueOf(dataMap.get("ord")))
-                .rowName(dataMap.get("account_nm")).build();
-        response.get(docType).getRows().add(row);
+                .rowAccountId(dataMap.get("account_id"))
+                .rowName(dataMap.get("account_nm"))
+                .build();
+        sceRowSet.add(row);
+        
+        Cell cell = Cell.builder().column(column).row(row).value(dataMap.get("bfefrmtrm_amount")).build();
+        sceAllCellList.add(cell);
+        
+//        response.get(docType).getRows().add(row);
 //        System.out.println("dataMap = " + dataMap);
 
     }
 
     private void putSCEColumns() {
-        for (String s : sceColumSet) {
-            response.get(DocType.SCE).getColumns().add(Column.builder()
-                    .columnName(s)
-                    .build());
+        for (Column column : sceColumSet) {
+            response.get(DocType.SCE).getColumns().add(column);
         }
     }
+
+    private void putSCERows() {
+        for (int i = 0; i < 3; i++) {
+            for (Row row : sceRowSet) {
+                Row newRow = row.deepCopy();
+                if(row.getRowAccountId().equals("dart_EquityAtBeginningOfPeriod"))
+                    newRow.setRowName(row.getRowName() + " (" + Integer.toString(i) + "기)");
+                response.get(DocType.SCE).getRows().add(newRow);
+            }
+        }
+    }
+
 }

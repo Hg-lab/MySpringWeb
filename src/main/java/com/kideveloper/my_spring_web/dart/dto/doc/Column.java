@@ -17,8 +17,26 @@ public class Column {
     private Integer order;
     private Column rootColumn;
     private Column parentColumn;
-    private List<Column> childColumns = new ArrayList<>();
+    private final List<Column> childColumns = new ArrayList<>();
     private Integer depth;
+
+    private final List<Cell> cells = new ArrayList<>();
+
+    public Column deepCopy() {
+        Column newColumn = Column.builder()
+                .columnName(this.columnName)
+                .order(this.order)
+                .rootColumn(this.rootColumn)
+                .parentColumn(this.parentColumn)
+                .depth(this.depth).build();
+
+        for (Cell cell : this.cells) {
+            newColumn.getCells().add(cell);
+        }
+
+        return newColumn;
+
+    }
 
     // 중복검사를 위해 VO로 구현, HashSet 에서는 hashCode 로 중복체크한다
     @Override
