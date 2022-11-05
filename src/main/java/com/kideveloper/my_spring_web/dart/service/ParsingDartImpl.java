@@ -115,21 +115,23 @@ public class ParsingDartImpl implements ParsingDart {
     private void writeSCE(LinkedHashMap<String, String> dataMap) {
         DocType docType = DocType.valueOf(dataMap.get("sj_div"));
 
-        // TODO: 2022/11/02 정규표현식으로 파
+        // TODO: 2022/11/02 정규표현식
         String accountDetail = dataMap.get("account_detail");
         accountDetail = accountDetail.replaceAll("[\\[\\w\\]]", "");
         accountDetail = accountDetail.replaceAll("\\s\\|", "\\|");
         List<String> columnNameList = Arrays.asList(accountDetail.split("\\|"));
         int depth = columnNameList.size();
+        String parentColumnName;
+        String rootColumnName;
         if (depth >= 2) {
-            accountDetail = columnNameList.get(columnNameList.size() - 1);
+            accountDetail = columnNameList.get(0);
         }
 
         // Build Column
-        String columnName = accountDetail.trim();
-//        System.out.println("accountDetail = " + accountDetail + " / depth = " + depth + " / colList = "+ colList);
+        String thisColumnName = columnNameList.get(columnNameList.size() - 1).trim();
+        System.out.println("accountDetail = " + accountDetail + " / depth = " + depth + " / colList = "+ columnNameList);
         Column column = Column.builder()
-                .columnName(columnName)
+                .columnName(thisColumnName)
                 .order(Integer.valueOf(dataMap.get("ord")))
 //                .rootColumn(null)
 //                .parentColumn(null)
@@ -137,15 +139,15 @@ public class ParsingDartImpl implements ParsingDart {
                 .build();
         if(!sceColumSet.contains(column)) sceColumSet.add(column);
 
-        String check = dataMap.get("account_id") + " / " +
-                        dataMap.get("account_nm") + " / " +
-                        accountDetail + " / " +
-                        dataMap.get("thstrm_amount") + " / " +
-                        dataMap.get("frmtrm_amount") + " / " +
-                        dataMap.get("bfefrmtrm_amount") + " / " +
-                        dataMap.get("ord");
+//        String check = dataMap.get("account_id") + " / " +
+//                        dataMap.get("account_nm") + " / " +
+//                        accountDetail + " / " +
+//                        dataMap.get("thstrm_amount") + " / " +
+//                        dataMap.get("frmtrm_amount") + " / " +
+//                        dataMap.get("bfefrmtrm_amount") + " / " +
+//                        dataMap.get("ord");
 
-        System.out.println(check);
+//        System.out.println(check);
 
         // Build Row
         Row row = Row.builder()
