@@ -120,24 +120,27 @@ public class ParsingDartImpl implements ParsingDart {
         accountDetail = accountDetail.replaceAll("[\\[\\w\\]]", "");
         accountDetail = accountDetail.replaceAll("\\s\\|", "\\|");
         List<String> columnNameList = Arrays.asList(accountDetail.split("\\|"));
-        int depth = columnNameList.size();
+
         String parentColumnName;
         String rootColumnName;
-        if (depth >= 2) {
-            accountDetail = columnNameList.get(0);
-        }
 
         // Build Column
-        String thisColumnName = columnNameList.get(columnNameList.size() - 1).trim();
-        System.out.println("accountDetail = " + accountDetail + " / depth = " + depth + " / colList = "+ columnNameList);
-        Column column = Column.builder()
-                .columnName(thisColumnName)
-                .order(Integer.valueOf(dataMap.get("ord")))
+        for (int i = 0; i < columnNameList.size(); i++) {
+            int depth;
+            if(columnNameList.size() == 1) depth = 0;
+            else depth = i + 1;
+            String columnName = columnNameList.get(i).trim();
+            Column column = Column.builder()
+                    .columnName(columnName)
+                    .order(Integer.valueOf(dataMap.get("ord")))
 //                .rootColumn(null)
 //                .parentColumn(null)
-                .depth(depth)
-                .build();
-        if(!sceColumSet.contains(column)) sceColumSet.add(column);
+                    .depth(depth)
+                    .build();
+            if(!sceColumSet.contains(column)) sceColumSet.add(column);
+
+        }
+
 
 //        String check = dataMap.get("account_id") + " / " +
 //                        dataMap.get("account_nm") + " / " +
@@ -158,8 +161,8 @@ public class ParsingDartImpl implements ParsingDart {
                 .build();
         sceRowSet.add(row);
         
-        Cell cell = Cell.builder().column(column).row(row).value(dataMap.get("bfefrmtrm_amount")).build();
-        sceAllCellList.add(cell);
+//        Cell cell = Cell.builder().column(column).row(row).value(dataMap.get("bfefrmtrm_amount")).build();
+//        sceAllCellList.add(cell);
         
 //        response.get(docType).getRows().add(row);
 //        System.out.println("dataMap = " + dataMap);
