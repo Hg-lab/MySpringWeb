@@ -15,7 +15,7 @@ public class Column {
     private final String id = UUID.randomUUID().toString();
     private String columnName;
     private Integer order;
-    private Column rootColumn;
+    private Boolean isRootColumn;
     private Column parentColumn;
     private final List<Column> childColumns = new ArrayList<>();
     private Integer depth;
@@ -26,7 +26,7 @@ public class Column {
         Column newColumn = Column.builder()
                 .columnName(this.columnName)
                 .order(this.order)
-                .rootColumn(this.rootColumn)
+                .isRootColumn(this.isRootColumn)
                 .parentColumn(this.parentColumn)
                 .depth(this.depth).build();
 

@@ -15,10 +15,12 @@ public class ParsingDartImpl implements ParsingDart {
     private Doc CashFlow = new Doc(DocType.CF);
     private Doc StatementChangeInEquity = new Doc(DocType.SCE);
     private Response response = new Response();
-    private Set<Column> sceColumSet = new LinkedHashSet<>();
+    private Map<String, Set<String>> sceParentColumnNamesMap = new HashMap<>();
+    private Map<String, Column> sceColumnMap = new HashMap<>();
     private Set<Row> sceRowSet = new LinkedHashSet<>();
+//    private Set<Row> sceRowSet = new LinkedHashSet<>();
     private List<Cell> sceAllCellList = new LinkedList<>();
-    
+
     // write docs
     @Override
     public Response writeDocs(List<LinkedHashMap<String, String>> list) {
@@ -118,39 +120,43 @@ public class ParsingDartImpl implements ParsingDart {
         // TODO: 2022/11/02 정규표현식
         String accountDetail = dataMap.get("account_detail");
         accountDetail = accountDetail.replaceAll("[\\[\\w\\]]", "");
-        accountDetail = accountDetail.replaceAll("\\s\\|", "\\|");
+        accountDetail = accountDetail.replaceAll("\\s", "");
         List<String> columnNameList = Arrays.asList(accountDetail.split("\\|"));
 
-        String parentColumnName;
         String rootColumnName;
 
         // Build Column
         for (int i = 0; i < columnNameList.size(); i++) {
-            int depth;
-            if(columnNameList.size() == 1) depth = 0;
-            else depth = i + 1;
+            int depth = i+1;
+            boolean isRootColumn = false;
+            if(columnNameList.size() == 1) {
+                isRootColumn = true;
+                depth = 0;
+            }
             String columnName = columnNameList.get(i).trim();
             Column column = Column.builder()
                     .columnName(columnName)
                     .order(Integer.valueOf(dataMap.get("ord")))
-//                .rootColumn(null)
+                    .isRootColumn(isRootColumn)
 //                .parentColumn(null)
                     .depth(depth)
                     .build();
-            if(!sceColumSet.contains(column)) sceColumSet.add(column);
-
+            sceColumnMap.put(columnName, column);
         }
+        String parentColumnName = columnNameList.get(0).trim();
+        if(sceParentColumnNamesMap.get(parentColumnName) == null) sceParentColumnNamesMap.put(parentColumnName, new HashSet<>());
+        sceParentColumnNamesMap.get(parentColumnName).addAll(columnNameList.subList(1, columnNameList.size()));
 
 
-//        String check = dataMap.get("account_id") + " / " +
-//                        dataMap.get("account_nm") + " / " +
-//                        accountDetail + " / " +
-//                        dataMap.get("thstrm_amount") + " / " +
-//                        dataMap.get("frmtrm_amount") + " / " +
-//                        dataMap.get("bfefrmtrm_amount") + " / " +
-//                        dataMap.get("ord");
+        String check = dataMap.get("account_id") + " / " +
+                        dataMap.get("account_nm") + " / " +
+                        accountDetail + " / " +
+                        dataMap.get("thstrm_amount") + " / " +
+                        dataMap.get("frmtrm_amount") + " / " +
+                        dataMap.get("bfefrmtrm_amount") + " / " +
+                        dataMap.get("ord");
 
-//        System.out.println(check);
+        System.out.println(check);
 
         // Build Row
         Row row = Row.builder()
@@ -160,17 +166,25 @@ public class ParsingDartImpl implements ParsingDart {
                 .rowName(dataMap.get("account_nm"))
                 .build();
         sceRowSet.add(row);
-        
+
 //        Cell cell = Cell.builder().column(column).row(row).value(dataMap.get("bfefrmtrm_amount")).build();
 //        sceAllCellList.add(cell);
-        
+
 //        response.get(docType).getRows().add(row);
 //        System.out.println("dataMap = " + dataMap);
 
     }
 
     private void putSCEColumns() {
-        for (Column column : sceColumSet) {
+        for (String parentColumnName : sceParentColumnNamesMap.keySet()) {
+            for (String childColumnName : sceParentColumnNamesMap.get(parentColumnName)) {
+                Column parentColumn = sceColumnMap.get(parentColumnName);
+                Column childColumn = sceColumnMap.get(childColumnName);
+                sceColumnMap.get(childColumnName).setParentColumn(parentColumn);
+                sceColumnMap.get(parentColumnName).getChildColumns().add(childColumn);
+            }
+        }
+        for (Column column : sceColumnMap.values()) {
             response.get(DocType.SCE).getColumns().add(column);
         }
     }
@@ -182,6 +196,7 @@ public class ParsingDartImpl implements ParsingDart {
                 if(row.getRowAccountId().equals("dart_EquityAtBeginningOfPeriod"))
                     newRow.setRowName(row.getRowName() + " (" + Integer.toString(i) + "기)");
                 response.get(DocType.SCE).getRows().add(newRow);
+                System.out.println(row);
             }
         }
     }
