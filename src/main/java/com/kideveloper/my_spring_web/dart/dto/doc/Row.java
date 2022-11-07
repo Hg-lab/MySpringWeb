@@ -14,6 +14,7 @@ public class Row {
     private Integer order = 0;
     private String rowAccountId;
     private String rowName;
+    private Integer term;
 
     private final List<Cell> cells = new ArrayList<>();
 
@@ -22,7 +23,9 @@ public class Row {
                 .docType(this.docType)
                 .order(this.order)
                 .rowAccountId(this.rowAccountId)
-                .rowName(this.rowName).build();
+                .rowName(this.rowName)
+                .term(this.term)
+                .build();
 
         for (Cell cell : this.getCells()) {
             newRow.getCells().add(cell);

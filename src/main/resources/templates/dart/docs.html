@@ -32,54 +32,55 @@
     <td th:text="${row.getDocType()}"></td>
     <td th:text="${row.getRowName()}"/>
     <td th:each="cell: ${row.getCells()}" th:text="${cell.getValue()}"/>
+<!--    <td th:each="cell: ${SCE.cells}" th:if="${cell.column==cellStat.}" th:text="${cell.value}"></td>-->
   </tr>
   </tbody>
 </table>
 
-  <table style="border: 12rem; margin-left:1rem;" class="table" id="testTbody">
-    <thead>
-      <th scope="col"></th>
-      <th scope="col"></th>
-      <th scope="col" th:each="column: ${BS.columns}" th:text="${column.getColumnName()}">3기</th>
-    </thead>
-    <tbody>
-    <tr th:each="row : ${BS.rows}">
-      <td th:text="${row.getDocType()}"></td>
-      <td th:text="${row.getRowName()}"/>
-      <td th:each="cell: ${row.getCells()}" th:text="${cell.getValue()}"/>
-    </tr>
-    </tbody>
-  </table>
+<!--  <table style="border: 12rem; margin-left:1rem;" class="table" id="testTbody">-->
+<!--    <thead>-->
+<!--      <th scope="col"></th>-->
+<!--      <th scope="col"></th>-->
+<!--      <th scope="col" th:each="column: ${BS.columns}" th:text="${column.getColumnName()}">3기</th>-->
+<!--    </thead>-->
+<!--    <tbody>-->
+<!--    <tr th:each="row : ${BS.rows}">-->
+<!--      <td th:text="${row.getDocType()}"></td>-->
+<!--      <td th:text="${row.getRowName()}"/>-->
+<!--      <td th:each="cell: ${row.getCells()}" th:text="${cell.getValue()}"/>-->
+<!--    </tr>-->
+<!--    </tbody>-->
+<!--  </table>-->
 
-<table style="border: 12rem; margin-left:1rem;" class="table" id="testTbody">
-  <thead>
-  <th scope="col"></th>
-  <th scope="col"></th>
-  <th scope="col" th:each="column: ${IS.columns}" th:text="${column.getColumnName()}">3기</th>
-  </thead>
-  <tbody>
-  <tr th:each="row : ${IS.rows}">
-    <td th:text="${row.getDocType()}"></td>
-    <td th:text="${row.getRowName()}"/>
-    <td th:each="cell: ${row.getCells()}" th:text="${cell.getValue()}"/>
-  </tr>
-  </tbody>
-</table>
+<!--<table style="border: 12rem; margin-left:1rem;" class="table" id="testTbody">-->
+<!--  <thead>-->
+<!--  <th scope="col"></th>-->
+<!--  <th scope="col"></th>-->
+<!--  <th scope="col" th:each="column: ${IS.columns}" th:text="${column.getColumnName()}">3기</th>-->
+<!--  </thead>-->
+<!--  <tbody>-->
+<!--  <tr th:each="row : ${IS.rows}">-->
+<!--    <td th:text="${row.getDocType()}"></td>-->
+<!--    <td th:text="${row.getRowName()}"/>-->
+<!--    <td th:each="cell: ${row.getCells()}" th:text="${cell.getValue()}"/>-->
+<!--  </tr>-->
+<!--  </tbody>-->
+<!--</table>-->
 
-<table style="border: 12rem; margin-left:1rem;" class="table" id="testTbody">
-  <thead>
-  <th scope="col"></th>
-  <th scope="col"></th>
-  <th scope="col" th:each="column: ${CIS.columns}" th:text="${column.getColumnName()}">3기</th>
-  </thead>
-  <tbody>
-  <tr th:each="row : ${CIS.rows}">
-    <td th:text="${row.getDocType()}"></td>
-    <td th:text="${row.getRowName()}"/>
-    <td th:each="cell: ${row.getCells()}" th:text="${cell.getValue()}"/>
-  </tr>
-  </tbody>
-</table>
+<!--<table style="border: 12rem; margin-left:1rem;" class="table" id="testTbody">-->
+<!--  <thead>-->
+<!--  <th scope="col"></th>-->
+<!--  <th scope="col"></th>-->
+<!--  <th scope="col" th:each="column: ${CIS.columns}" th:text="${column.getColumnName()}">3기</th>-->
+<!--  </thead>-->
+<!--  <tbody>-->
+<!--  <tr th:each="row : ${CIS.rows}">-->
+<!--    <td th:text="${row.getDocType()}"></td>-->
+<!--    <td th:text="${row.getRowName()}"/>-->
+<!--    <td th:each="cell: ${row.getCells()}" th:text="${cell.getValue()}"/>-->
+<!--  </tr>-->
+<!--  </tbody>-->
+<!--</table>-->
 
 
 </body>

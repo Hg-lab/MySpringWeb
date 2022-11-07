@@ -9,6 +9,6 @@ import lombok.Data;
 public class Cell {
 
     private Column column;
-    private Row row;
+//    private Row row;
     private String value;
 }

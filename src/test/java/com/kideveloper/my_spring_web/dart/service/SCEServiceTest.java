@@ -30,10 +30,10 @@ class SCEServiceTest {
 
                 for (int i = 0; i < response.get(key).getCells().size(); i++) {
                     String columnName = response.get(key).getCells().get(i).getColumn().getColumnName();
-                    String rowName = response.get(key).getCells().get(i).getRow().getRowName();
+//                    String rowName = response.get(key).getCells().get(i).getRowName();
                     String value = response.get(key).getCells().get(i).getValue();
 
-                    System.out.println("columnName = " + columnName + " / " + " rowName = " + rowName + "  " + value);
+//                    System.out.println("columnName = " + columnName + " / " + " rowName = " + rowName + "  " + value);
                 }
             }
         }
