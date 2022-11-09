@@ -5,12 +5,11 @@ import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 @Data
 @Builder
-public class Column {
+public class Column implements Comparable<Column>{
 
     private final String id = UUID.randomUUID().toString();
     private String columnName;
@@ -50,5 +49,10 @@ public class Column {
     @Override
     public int hashCode() {
         return columnName.hashCode();
+    }
+
+    @Override
+    public int compareTo(Column column) {
+        return this.order - column.order;
     }
 }

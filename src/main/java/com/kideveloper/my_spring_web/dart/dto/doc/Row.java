@@ -8,10 +8,10 @@ import java.util.List;
 
 @Data
 @Builder
-public class Row {
+public class Row implements Comparable{
 
     private DocType docType;
-    private Integer order = 0;
+    private Integer order;
     private String rowAccountId;
     private String rowName;
     private Integer term;
@@ -28,10 +28,14 @@ public class Row {
                 .build();
 
         for (Cell cell : this.getCells()) {
-            newRow.getCells().add(cell);
+            newRow.getCells().add(cell.deepCopy());
         }
 
         return newRow;
     }
 
+    @Override
+    public int compareTo(Object o) {
+        return this.order - ((Row) o).order;
+    }
 }
