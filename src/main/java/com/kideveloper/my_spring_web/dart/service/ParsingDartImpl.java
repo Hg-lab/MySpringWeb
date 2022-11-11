@@ -21,7 +21,8 @@ public class ParsingDartImpl implements ParsingDart {
     private Map<String, List<Cell>> sceRowAccountIdCellListMap = new HashMap<>();
     private Map<Integer, List<Cell>> sceTermCellListMap = new HashMap<>();
 
-    private Integer sceColumnNumber = 0;
+    private Integer sceMaxColumnOrder = 0;
+    private Integer sceMaxColumnDepth = 0;
 
     // write docs
     @Override
@@ -34,6 +35,7 @@ public class ParsingDartImpl implements ParsingDart {
 
             if(docType == DocType.SCE) {
                 writeSCE(dataMap);
+                response.get(DocType.SCE).setMaxDepth(sceMaxColumnDepth);
             }
 
             else {
@@ -131,7 +133,7 @@ public class ParsingDartImpl implements ParsingDart {
         accountDetail = accountDetail.replaceAll("\\s", "");
         List<String> columnNameList = Arrays.asList(accountDetail.split("\\|"));
 
-
+        sceMaxColumnDepth = Math.max(sceMaxColumnDepth, columnNameList.size());
         // Build Column
         for (int i = 0; i < columnNameList.size(); i++) {
             int depth = i+1;
@@ -191,37 +193,39 @@ public class ParsingDartImpl implements ParsingDart {
         sceRowAccountIdCellListMap.get(row.getRowAccountId()).add(fromTermCell);
         sceRowAccountIdCellListMap.get(row.getRowAccountId()).add(thisTermCell);
 
-
         if (sceTermCellListMap.get(0) == null) sceTermCellListMap.put(0, new ArrayList<>());
         if (sceTermCellListMap.get(1) == null) sceTermCellListMap.put(1, new ArrayList<>());
         if (sceTermCellListMap.get(2) == null) sceTermCellListMap.put(2, new ArrayList<>());
         sceTermCellListMap.get(0).add(beforeFromTermCell);
         sceTermCellListMap.get(1).add(fromTermCell);
         sceTermCellListMap.get(2).add(thisTermCell);
-
-
-//        response.get(docType).getRows().add(row);
-//        System.out.println("dataMap = " + dataMap);
-
     }
 
     private void putSCEColumns() {
-        System.out.println("sceColumNameCellListMap = " + sceColumNameCellListMap);
         int order = 0;
-        List<Column> columns = new ArrayList<>();
+            List<Column> columns = new ArrayList<>();
         for (Column column: sceColumnNameColumnMap.values()) {
-            if (column.getIsRootColumn()) {
-                column.setDepth(2);
-                column.setOrder(sceColumnNameColumnMap.size()-2);
-            } else {
-                if(column.getDepth() != 2) continue;
-                column.setOrder(order++);
+            if(0 < column.getDepth() && column.getDepth() < sceMaxColumnDepth){
+                column.setOrder(0);
+                columns.add(column);
+                continue;
             }
+
+            if (column.getDepth() == 0) {
+                column.setDepth(sceMaxColumnDepth);
+                column.setOrder(sceColumnNameColumnMap.size()-2); // child column의 수
+            }
+
+            if(column.getDepth() == sceMaxColumnDepth)
+                column.setOrder(order++);
+
             List<Cell> cells = sceColumNameCellListMap.get(column.getColumnName());
             for (Cell cell : cells) cell.setColumn(column);
-            sceColumnNumber = Math.max(sceColumnNumber, column.getOrder());
             columns.add(column);
+
+            sceMaxColumnOrder = Math.max(sceMaxColumnOrder, column.getOrder());
         }
+
         Collections.sort(columns);
         response.get(DocType.SCE).getColumns().addAll(columns);
     }
@@ -243,7 +247,7 @@ public class ParsingDartImpl implements ParsingDart {
                 Collections.sort(newRow.getCells());
             }
         }
-//        Collections.sort(response.get((DocType.SCE)).getRows());
+        Collections.sort(response.get((DocType.SCE)).getRows());
     }
 
 
@@ -254,7 +258,7 @@ public class ParsingDartImpl implements ParsingDart {
                 Integer order = cell.getColumn().getOrder();
                 orders.add(order);
             }
-            for (int i = 0; i < sceColumnNumber; i++) {
+            for (int i = 0; i < sceMaxColumnOrder; i++) {
                 if(orders.contains(i)) continue;
                 row.getCells().add(i, Cell.builder().value("0").build());
             }

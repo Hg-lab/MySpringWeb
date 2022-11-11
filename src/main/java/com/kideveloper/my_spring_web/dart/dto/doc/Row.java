@@ -28,7 +28,8 @@ public class Row implements Comparable{
                 .build();
 
         for (Cell cell : this.getCells()) {
-            newRow.getCells().add(cell.deepCopy());
+            newRow.getCells().add(cell);
+//            newRow.getCells().add(cell.deepCopy());
         }
 
         return newRow;

@@ -4,7 +4,7 @@ import lombok.Data;
 
 import java.util.HashMap;
 
-// Service -> Controller
+// DartService -> DartController
 @Data
 public class Response extends HashMap<DocType, Doc> {
 }

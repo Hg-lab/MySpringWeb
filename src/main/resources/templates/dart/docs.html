@@ -20,7 +20,7 @@
 </style>
 <table class="table">
   <thead>
-    <tr th:each="depth: ${#numbers.sequence(0,2)}">
+    <tr th:each="depth: ${#numbers.sequence(0,SCE.getMaxDepth())}">
       <th scope="col"></th>
       <th scope="col"></th>
       <th scope="col" th:each="column: ${SCE.columns}" th:if="${column.getDepth()==depth}" th:text="${column.getColumnName()}" th:attrappend="colspan=${column.getChildColumns().size()}">3기</th>
