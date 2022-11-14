@@ -22,6 +22,7 @@ public class ParsingDartImpl implements ParsingDart {
     private Map<Integer, List<Cell>> sceTermCellListMap = new HashMap<>();
 
     private Integer sceMaxColumnOrder = 0;
+    private Integer sceMaxRowOrder = 0;
     private Integer sceMaxColumnDepth = 0;
 
     // write docs
@@ -155,7 +156,7 @@ public class ParsingDartImpl implements ParsingDart {
         if(sceParentChildColumnNameSetMap.get(parentColumnName) == null) sceParentChildColumnNameSetMap.put(parentColumnName, new HashSet<>());
         sceParentChildColumnNameSetMap.get(parentColumnName).addAll(columnNameList.subList(1, columnNameList.size()));
 
-
+        System.out.println("dataMap = " + dataMap);
 //        String check = dataMap.get("account_id") + " / " +
 //                        dataMap.get("account_nm") + " / " +
 //                        accountDetail + " / " +
@@ -174,7 +175,7 @@ public class ParsingDartImpl implements ParsingDart {
                 .rowName(dataMap.get("account_nm"))
                 .build();
         sceRowSet.add(row);
-
+        sceMaxRowOrder = Math.max(sceMaxRowOrder, row.getOrder());
         Cell beforeFromTermCell = Cell.builder().term(0).value(dataMap.get("bfefrmtrm_amount")).build();
         Cell fromTermCell = Cell.builder().term(1).value(dataMap.get("frmtrm_amount")).build();
         Cell thisTermCell = Cell.builder().term(2).value(dataMap.get("thstrm_amount")).build();
@@ -202,8 +203,17 @@ public class ParsingDartImpl implements ParsingDart {
     }
 
     private void putSCEColumns() {
+
+        for (String parentColumnName : sceParentChildColumnNameSetMap.keySet()) {
+            Column parentColumn = sceColumnNameColumnMap.get(parentColumnName);
+            for (String childColumnName : sceParentChildColumnNameSetMap.get(parentColumnName)) {
+                Column childColumn = sceColumnNameColumnMap.get(childColumnName);
+                parentColumn.getChildColumns().add(childColumn);
+            }
+        }
+
         int order = 0;
-            List<Column> columns = new ArrayList<>();
+        List<Column> columns = new ArrayList<>();
         for (Column column: sceColumnNameColumnMap.values()) {
             if(0 < column.getDepth() && column.getDepth() < sceMaxColumnDepth){
                 column.setOrder(0);
@@ -211,12 +221,10 @@ public class ParsingDartImpl implements ParsingDart {
                 continue;
             }
 
-            if (column.getDepth() == 0) {
+            if (column.getDepth() == 0) { // root column 합계 항목
                 column.setDepth(sceMaxColumnDepth);
                 column.setOrder(sceColumnNameColumnMap.size()-2); // child column의 수
-            }
-
-            if(column.getDepth() == sceMaxColumnDepth)
+            } else if(column.getDepth() == sceMaxColumnDepth)
                 column.setOrder(order++);
 
             List<Cell> cells = sceColumNameCellListMap.get(column.getColumnName());
@@ -243,6 +251,7 @@ public class ParsingDartImpl implements ParsingDart {
                 }
                 if(row.getRowAccountId().equals("dart_EquityAtBeginningOfPeriod"))
                     newRow.setRowName(row.getRowName() + " (" + Integer.toString(i) + "기)");
+                newRow.setOrder(newRow.getOrder() + (i * sceMaxRowOrder));
                 response.get(DocType.SCE).getRows().add(newRow);
                 Collections.sort(newRow.getCells());
             }

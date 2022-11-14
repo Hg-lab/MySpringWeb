@@ -4,6 +4,11 @@
 + https://github.com/rainabba/jquery-table2excel/issues/105
 + http://localhost:8080/dart/docs?stock_code=005930&corp_code=00126380&bsns_year=2021&reprt_code=11011&fs_div=CFS
 
+```shell
+$ mysql.server start
+$ mysql.server stop
+```
+
 | 요청키         | 명칭      | 타입         | 필수여부 | 값설명                                                                |
 | ----------- | ------- | ---------- | ---- | ------------------------------------------------------------------ |
 | crtfc\_key  | API 인증키 | STRING(40) | Y    | 발급받은 인증키(40자리)                                                     |

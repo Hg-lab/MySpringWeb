@@ -19,7 +19,6 @@ public class Column implements Comparable<Column>{
     private final List<Column> childColumns = new ArrayList<>();
     private Integer depth;
 
-    private final List<Cell> cells = new ArrayList<>();
 
     public Column deepCopy() {
         Column newColumn = Column.builder()
@@ -28,10 +27,6 @@ public class Column implements Comparable<Column>{
                 .isRootColumn(this.isRootColumn)
                 .parentColumn(this.parentColumn)
                 .depth(this.depth).build();
-
-        for (Cell cell : this.cells) {
-            newColumn.getCells().add(cell);
-        }
 
         return newColumn;
 
