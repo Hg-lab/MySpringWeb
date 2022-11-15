@@ -2,7 +2,6 @@ package com.kideveloper.my_spring_web.dart.service;
 
 import com.kideveloper.my_spring_web.dart.dto.doc.*;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.*;
 
 // request scope
@@ -126,46 +125,34 @@ public class ParsingDartImpl implements ParsingDart {
 
     }
     private void writeSCE(LinkedHashMap<String, String> dataMap) {
-        DocType docType = DocType.valueOf(dataMap.get("sj_div"));
-
         // TODO: 2022/11/02 정규표현식
         String accountDetail = dataMap.get("account_detail");
         accountDetail = accountDetail.replaceAll("[\\[\\w\\]]", "");
         accountDetail = accountDetail.replaceAll("\\s", "");
         List<String> columnNameList = Arrays.asList(accountDetail.split("\\|"));
 
-        sceMaxColumnDepth = Math.max(sceMaxColumnDepth, columnNameList.size());
         // Build Column
         for (int i = 0; i < columnNameList.size(); i++) {
-            int depth = i+1;
             boolean isRootColumn = false;
             if(columnNameList.size() == 1) {
                 isRootColumn = true;
-                depth = 0;
             }
+
+            int depth = 1;
+            if(i >= 1) depth = 2;
+
             String columnName = columnNameList.get(i).trim();
             Column column = Column.builder()
                     .columnName(columnName)
                     .isRootColumn(isRootColumn)
-//                .parentColumn(null)
                     .depth(depth)
                     .build();
             sceColumnNameColumnMap.put(columnName, column);
+            sceMaxColumnDepth = Math.max(sceMaxColumnDepth, depth);
         }
         String parentColumnName = columnNameList.get(0).trim();
         if(sceParentChildColumnNameSetMap.get(parentColumnName) == null) sceParentChildColumnNameSetMap.put(parentColumnName, new HashSet<>());
         sceParentChildColumnNameSetMap.get(parentColumnName).addAll(columnNameList.subList(1, columnNameList.size()));
-
-        System.out.println("dataMap = " + dataMap);
-//        String check = dataMap.get("account_id") + " / " +
-//                        dataMap.get("account_nm") + " / " +
-//                        accountDetail + " / " +
-//                        dataMap.get("thstrm_amount") + " / " +
-//                        dataMap.get("frmtrm_amount") + " / " +
-//                        dataMap.get("bfefrmtrm_amount") + " / " +
-//                        dataMap.get("ord");
-//
-//        System.out.println(check);
 
         // Build Row
         Row row = Row.builder()
@@ -215,19 +202,18 @@ public class ParsingDartImpl implements ParsingDart {
         int order = 0;
         List<Column> columns = new ArrayList<>();
         for (Column column: sceColumnNameColumnMap.values()) {
-            if(0 < column.getDepth() && column.getDepth() < sceMaxColumnDepth){
+            if(!column.getIsRootColumn() && column.getDepth() < sceMaxColumnDepth){
                 column.setOrder(0);
-                columns.add(column);
-                continue;
             }
 
-            if (column.getDepth() == 0) { // root column 합계 항목
+            if (column.getIsRootColumn()) { // root column 합계 항목
                 column.setDepth(sceMaxColumnDepth);
                 column.setOrder(sceColumnNameColumnMap.size()-2); // child column의 수
             } else if(column.getDepth() == sceMaxColumnDepth)
                 column.setOrder(order++);
 
             List<Cell> cells = sceColumNameCellListMap.get(column.getColumnName());
+            if(cells == null) continue;
             for (Cell cell : cells) cell.setColumn(column);
             columns.add(column);
 
@@ -269,7 +255,7 @@ public class ParsingDartImpl implements ParsingDart {
             }
             for (int i = 0; i < sceMaxColumnOrder; i++) {
                 if(orders.contains(i)) continue;
-                row.getCells().add(i, Cell.builder().value("0").build());
+                row.getCells().add(i, Cell.builder().value(" ").build());
             }
         }
 
