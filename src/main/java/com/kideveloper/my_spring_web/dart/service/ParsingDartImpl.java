@@ -20,9 +20,13 @@ public class ParsingDartImpl implements ParsingDart {
     private Map<String, List<Cell>> sceRowNameCellListMap = new HashMap<>();
     private Map<Integer, List<Cell>> sceTermCellListMap = new HashMap<>();
 
-    private Integer sceMaxColumnOrder = 0;
     private Integer sceMaxRowOrder = 0;
     private Integer sceMaxColumnDepth = 0;
+
+    static final Integer SCE_MAX_ROW_ORDER = 100;
+    static final Integer SCE_MAX_COLUMN_ORDER = 20;
+
+    private Map<Integer,Column> sceColumnorderColumnMap = new HashMap<>();
 
     // write docs
     @Override
@@ -115,9 +119,9 @@ public class ParsingDartImpl implements ParsingDart {
                 .column(beforeFromTermColumn)
                 .build();
 
-        response.get(docType).getCells().add(thisCell);
-        response.get(docType).getCells().add(fromCell);
-        response.get(docType).getCells().add(beforeFromCell);
+//        response.get(docType).getCells().add(thisCell);
+//        response.get(docType).getCells().add(fromCell);
+//        response.get(docType).getCells().add(beforeFromCell);
 
         row.getCells().add(thisCell);
         row.getCells().add(fromCell);
@@ -147,7 +151,12 @@ public class ParsingDartImpl implements ParsingDart {
                     .isRootColumn(isRootColumn)
                     .depth(depth)
                     .build();
-            sceColumnNameColumnMap.put(columnName, column);
+
+            if(sceColumnNameColumnMap.get(columnName) == null) {
+                column.setOrder(20-sceColumnNameColumnMap.size()); // 컬럼 들어온 역순으로 정렬
+                sceColumnNameColumnMap.put(columnName, column);
+            }
+
             sceMaxColumnDepth = Math.max(sceMaxColumnDepth, depth);
         }
         String parentColumnName = columnNameList.get(0).trim();
@@ -203,21 +212,24 @@ public class ParsingDartImpl implements ParsingDart {
         List<Column> columns = new ArrayList<>();
         for (Column column: sceColumnNameColumnMap.values()) {
             if(!column.getIsRootColumn() && column.getDepth() < sceMaxColumnDepth){
-                column.setOrder(0);
+                if(column.getOrder() == null)
+                    column.setOrder(0);
             }
 
-            if (column.getIsRootColumn()) { // root column 합계 항목
+            if (column.getIsRootColumn()) { // root column 은 합계 항목
                 column.setDepth(sceMaxColumnDepth);
-                column.setOrder(sceColumnNameColumnMap.size()-2); // child column의 수
+                if(column.getOrder() == null)
+                    column.setOrder(sceColumnNameColumnMap.size()-2); // child column 의 수
             } else if(column.getDepth() == sceMaxColumnDepth)
-                column.setOrder(order++);
+                if(column.getOrder() == null)
+                    column.setOrder(order++);
 
             List<Cell> cells = sceColumNameCellListMap.get(column.getColumnName());
             if(cells == null) continue;
             for (Cell cell : cells) cell.setColumn(column);
             columns.add(column);
 
-            sceMaxColumnOrder = Math.max(sceMaxColumnOrder, column.getOrder());
+            sceColumnorderColumnMap.put(column.getOrder(), column);
         }
 
         Collections.sort(columns);
@@ -237,9 +249,8 @@ public class ParsingDartImpl implements ParsingDart {
                 }
                 if(row.getRowAccountId().equals("dart_EquityAtBeginningOfPeriod"))
                     newRow.setRowName(row.getRowName() + " (" + Integer.toString(i) + "기)");
-                newRow.setOrder(newRow.getOrder() + (i * sceMaxRowOrder));
+                newRow.setOrder(newRow.getOrder() + (i * SCE_MAX_ROW_ORDER));
                 response.get(DocType.SCE).getRows().add(newRow);
-                Collections.sort(newRow.getCells());
             }
         }
         Collections.sort(response.get((DocType.SCE)).getRows());
@@ -253,10 +264,14 @@ public class ParsingDartImpl implements ParsingDart {
                 Integer order = cell.getColumn().getOrder();
                 orders.add(order);
             }
-            for (int i = 0; i < sceMaxColumnOrder; i++) {
-                if(orders.contains(i)) continue;
-                row.getCells().add(i, Cell.builder().value(" ").build());
+            Set<Integer> sceColumnOrderSet = new HashSet<>(sceColumnorderColumnMap.keySet());
+            sceColumnOrderSet.removeAll(orders);
+
+            for (Integer columnOrder : sceColumnOrderSet) {
+                row.getCells().add(Cell.builder().column(sceColumnorderColumnMap.get(columnOrder)).value(" ").build());
             }
+
+            Collections.sort(row.getCells());
         }
 
     }
