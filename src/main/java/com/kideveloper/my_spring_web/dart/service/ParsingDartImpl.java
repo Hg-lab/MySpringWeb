@@ -17,7 +17,7 @@ public class ParsingDartImpl implements ParsingDart {
 
     //매핑
     private Map<String, List<Cell>> sceColumNameCellListMap = new HashMap<>();
-    private Map<String, List<Cell>> sceRowAccountIdCellListMap = new HashMap<>();
+    private Map<String, List<Cell>> sceRowNameCellListMap = new HashMap<>();
     private Map<Integer, List<Cell>> sceTermCellListMap = new HashMap<>();
 
     private Integer sceMaxColumnOrder = 0;
@@ -175,11 +175,11 @@ public class ParsingDartImpl implements ParsingDart {
         sceColumNameCellListMap.get(thisColumnName).add(thisTermCell);
 
         // Cell -> Row
-        if(sceRowAccountIdCellListMap.get(row.getRowAccountId()) == null)
-            sceRowAccountIdCellListMap.put(row.getRowAccountId(), new ArrayList<>());
-        sceRowAccountIdCellListMap.get(row.getRowAccountId()).add(beforeFromTermCell);
-        sceRowAccountIdCellListMap.get(row.getRowAccountId()).add(fromTermCell);
-        sceRowAccountIdCellListMap.get(row.getRowAccountId()).add(thisTermCell);
+        if(sceRowNameCellListMap.get(row.getRowName()) == null)
+            sceRowNameCellListMap.put(row.getRowName(), new ArrayList<>());
+        sceRowNameCellListMap.get(row.getRowName()).add(beforeFromTermCell);
+        sceRowNameCellListMap.get(row.getRowName()).add(fromTermCell);
+        sceRowNameCellListMap.get(row.getRowName()).add(thisTermCell);
 
         if (sceTermCellListMap.get(0) == null) sceTermCellListMap.put(0, new ArrayList<>());
         if (sceTermCellListMap.get(1) == null) sceTermCellListMap.put(1, new ArrayList<>());
@@ -230,7 +230,7 @@ public class ParsingDartImpl implements ParsingDart {
                 int term = i;
                 row.setTerm(term);
                 Row newRow = row.deepCopy();
-                List<Cell> cellsInThisRowId = sceRowAccountIdCellListMap.get(newRow.getRowAccountId());
+                List<Cell> cellsInThisRowId = sceRowNameCellListMap.get(newRow.getRowName());
                 for (Cell cell : cellsInThisRowId) {
                     if(cell.getTerm() == newRow.getTerm())
                         newRow.getCells().add(cell);
