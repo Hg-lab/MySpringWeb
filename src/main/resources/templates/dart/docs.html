@@ -20,10 +20,14 @@
 </style>
 <table class="table">
   <thead>
-    <tr th:each="depth: ${#numbers.sequence(0,SCE.getMaxDepth())}">
+    <tr th:each="depth: ${#numbers.sequence(1,SCE.getMaxDepth())}">
       <th scope="col"></th>
       <th scope="col"></th>
-      <th scope="col" th:each="column: ${SCE.columns}" th:if="${column.getDepth()==depth}" th:text="${column.columnName}" th:attrappend="colspan=${column.getChildColumns().size()}">3기</th>
+      <th scope="col" th:each="column: ${SCE.columns}"
+          th:if="${column.getDepth()==depth}"
+          th:text="${column.columnName}"
+          th:colspan="${column.getChildColumns().size()}"
+          th:rowspan="${column.isRootColumn==true} ? 3 : 1">자본변동표</th>
     </tr>
   </thead>
   <tbody>

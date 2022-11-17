@@ -133,7 +133,7 @@ public class ParsingDartImpl implements ParsingDart {
                     .build();
 
             if(sceColumnNameColumnMap.get(columnName) == null) {
-                column.setOrder(20-sceColumnNameColumnMap.size()); // 컬럼 들어온 역순으로 정렬
+                column.setOrder(SCE_MAX_ROW_ORDER-sceColumnNameColumnMap.size()); // 컬럼 들어온 역순으로 정렬
                 sceColumnNameColumnMap.put(columnName, column);
             }
 
@@ -204,10 +204,11 @@ public class ParsingDartImpl implements ParsingDart {
                 if(column.getOrder() == null)
                     column.setOrder(order++);
 
+            columns.add(column);
+
             List<Cell> cells = sceColumNameCellListMap.get(column.getColumnName());
             if(cells == null) continue;
             for (Cell cell : cells) cell.setColumn(column);
-            columns.add(column);
 
             sceColumnOrderColumnMap.put(column.getOrder(), column);
         }
