@@ -26,24 +26,23 @@ public class ParsingDartImpl implements ParsingDart {
     static final Integer SCE_MAX_ROW_ORDER = 100;
     static final Integer SCE_MAX_COLUMN_ORDER = 20;
 
-    private Map<Integer,Column> sceColumnorderColumnMap = new HashMap<>();
+    private Map<Integer,Column> sceColumnOrderColumnMap = new HashMap<>();
 
     // write docs
     @Override
     public Response writeDocs(List<LinkedHashMap<String, String>> list) {
-        initResponse();
 
         for (LinkedHashMap<String, String> dataMap : list) {
-
             DocType docType = DocType.valueOf(dataMap.get("sj_div"));
 
             if(docType == DocType.SCE) {
-                writeSCE(dataMap);
+                writeSCEDoc(dataMap);
                 response.get(DocType.SCE).setMaxDepth(sceMaxColumnDepth);
             }
 
             else {
-                writeFinanceState(dataMap);
+                writeFinanceStateDoc(dataMap);
+
             }
 
         }
@@ -54,26 +53,9 @@ public class ParsingDartImpl implements ParsingDart {
         return response;
     }
 
-    private void initResponse() {
-        Doc BusinessStatement = new Doc(DocType.BS);
-        Doc IncomeStatement = new Doc(DocType.IS);
-        Doc CommonIncomeStatement = new Doc(DocType.CIS);
-        Doc CashFlow = new Doc(DocType.CF);
-        Doc StatementChangeInEquity = new Doc(DocType.SCE);
-
-        response.put(BusinessStatement.getDocType(), BusinessStatement);
-        response.put(IncomeStatement.getDocType(), IncomeStatement);
-        response.put(CommonIncomeStatement.getDocType(), CommonIncomeStatement);
-        response.put(CashFlow.getDocType(), CashFlow);
-        response.put(StatementChangeInEquity.getDocType(), StatementChangeInEquity);
-    }
-
-
     // TODO: 2022/11/01 refactoring
-
-    private void writeFinanceState(LinkedHashMap<String, String> dataMap) {
+    private void writeFinanceStateDoc(LinkedHashMap<String, String> dataMap) {
         DocType docType = DocType.valueOf(dataMap.get("sj_div"));
-            // TODO: 2022/10/30 set Columns
 
         // generating Columns
         Column thisTermColumn = Column.builder()
@@ -119,16 +101,14 @@ public class ParsingDartImpl implements ParsingDart {
                 .column(beforeFromTermColumn)
                 .build();
 
-//        response.get(docType).getCells().add(thisCell);
-//        response.get(docType).getCells().add(fromCell);
-//        response.get(docType).getCells().add(beforeFromCell);
-
         row.getCells().add(thisCell);
         row.getCells().add(fromCell);
         row.getCells().add(beforeFromCell);
 
     }
-    private void writeSCE(LinkedHashMap<String, String> dataMap) {
+    private void writeSCEDoc(LinkedHashMap<String, String> dataMap) {
+        System.out.println("dataMap = " + dataMap);
+
         // TODO: 2022/11/02 정규표현식
         String accountDetail = dataMap.get("account_detail");
         accountDetail = accountDetail.replaceAll("[\\[\\w\\]]", "");
@@ -229,7 +209,7 @@ public class ParsingDartImpl implements ParsingDart {
             for (Cell cell : cells) cell.setColumn(column);
             columns.add(column);
 
-            sceColumnorderColumnMap.put(column.getOrder(), column);
+            sceColumnOrderColumnMap.put(column.getOrder(), column);
         }
 
         Collections.sort(columns);
@@ -264,11 +244,11 @@ public class ParsingDartImpl implements ParsingDart {
                 Integer order = cell.getColumn().getOrder();
                 orders.add(order);
             }
-            Set<Integer> sceColumnOrderSet = new HashSet<>(sceColumnorderColumnMap.keySet());
+            Set<Integer> sceColumnOrderSet = new HashSet<>(sceColumnOrderColumnMap.keySet());
             sceColumnOrderSet.removeAll(orders);
 
             for (Integer columnOrder : sceColumnOrderSet) {
-                row.getCells().add(Cell.builder().column(sceColumnorderColumnMap.get(columnOrder)).value(" ").build());
+                row.getCells().add(Cell.builder().column(sceColumnOrderColumnMap.get(columnOrder)).value(" ").build());
             }
 
             Collections.sort(row.getCells());
