@@ -1,0 +1,92 @@
+
+[
+  {
+    "country":"country 1",
+    "districts":[
+      {
+        "district":"district 1",
+        "cinemas":[
+          {
+            "cinema": "cinema 1",
+            "movie":"Sherlock",
+            "visitor":30
+          },{
+            "cinema": "cinema 2",
+            "movie":"Terminator",
+            "visitor":40
+          },{
+            "cinema": "cinema 2",
+            "movie":"Tarzan",
+            "visitor":20
+          }]
+      }, {
+        "district":"district 2",
+        "cinemas":[
+          {
+            "cinema": "cinema 1",
+            "movie":"Sherlock",
+            "visitor":12
+          },{
+            "cinema": "cinema 2",
+            "movie":"Terminator",
+            "visitor":41
+          },{
+            "cinema": "cinema 2",
+            "movie":"Tarzan",
+            "visitor":24
+          }]
+      }, {
+        "district":"district 3",
+        "cinemas":[
+          {
+            "cinema": "cinema 1",
+            "movie":"Sherlock",
+            "visitor":12
+          },{
+            "cinema": "cinema 2",
+            "movie":"Terminator",
+            "visitor":41
+          }]
+      }]
+  },    {
+  "country":"country 2",
+  "districts":[
+    {
+      "district":"district 1",
+      "cinemas":[
+        {
+          "cinema": "cinema 2",
+          "movie":"Terminator",
+          "visitor":40
+        },{
+          "cinema": "cinema 2",
+          "movie":"Tarzan",
+          "visitor":20
+        }]
+    }, {
+      "district":"district 2",
+      "cinemas":[
+        {
+          "cinema": "cinema 1",
+          "movie":"Sherlock",
+          "visitor":12
+        },{
+          "cinema": "cinema 2",
+          "movie":"Tarzan",
+          "visitor":24
+        }]
+    }, {
+      "district":"district 3",
+      "cinemas":[
+        {
+          "cinema": "cinema 1",
+          "movie":"Sherlock",
+          "visitor":12
+        },{
+          "cinema": "cinema 2",
+          "movie":"Terminator",
+          "visitor":41
+        }]
+    }]
+}
+]

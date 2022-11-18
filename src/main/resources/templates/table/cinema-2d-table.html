@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Hello</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<style>
+  table {
+    width: 75%;
+    /*border: 1px solid #444444;*/
+    margin-left:1rem;
+  }
+  th, td {
+    border: 1px solid #444444;
+  }
+</style>
+
+<table>
+  <thead>
+  <tr>
+    <th rowspan="3">Movies</th>
+      <th th:each="country: ${countries}" th:colspan="${country.districts.size()}" th:text="${country.country}" ></th>
+  </tr>
+  <tr>
+    <th:block th:each="country: ${countries}">
+        <th th:each="district:${country.districts}" th:text="${district.district}"></th>
+    </th:block>
+  </tr>
+  <thead>
+  <tbody>
+    <tr th:each="cinema: ${countries.get(0).districts.get(0).cinemas}"> <!-- Here might be problem.-->
+      <td th:text="${cinema.movie}"></td>
+      <th:block th:each="country : ${countries}">
+        <th:block th:each="district :${country.districts}">
+            <td th:each="cinema :${district.cinemas}" th:text="${cinema.visitor}" />
+        </th:block>
+      </th:block>
+    </tr>
+  </tbody>
+</table>
+
+</body>
+</html>
