@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Hello</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<style>
+  table {
+    width: 75%;
+    /*border: 1px solid #444444;*/
+    margin-left:1rem;
+  }
+  th, td {
+    border: 1px solid #444444;
+  }
+</style>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th></th>
+      <th th:each="column: ${columns}" th:text="${column.getColumnName()}">col1</th>
+    </tr>
+  </thead>
+  <tbody>
+  <tr th:each="row: ${rows}">
+    <td th:text="${row.getKey().getRowName()}"></td>
+    <td th:each="column: ${columns}" th:text="${rows.get(row.getKey()).get(column)}"></td>
+  </tr>
+  </tbody>
+</table>
+
+</body>
+</html>
