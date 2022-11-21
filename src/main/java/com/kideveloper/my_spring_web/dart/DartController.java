@@ -19,7 +19,6 @@ import java.util.*;
 
 @Controller
 @RequestMapping("/dart")
-@RequiredArgsConstructor
 public class DartController {
 
     // TODO: 2022/10/29 Thread-safe 를 위한 final 설정
