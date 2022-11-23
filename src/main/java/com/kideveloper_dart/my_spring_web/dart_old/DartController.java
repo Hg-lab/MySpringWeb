@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.*;
 
-@Controller
-@RequestMapping("/dart")
+//@Controller
+@RequestMapping("/dart_old")
 public class DartController {
 
     // TODO: 2022/10/29 Thread-safe 를 위한 final 설정
