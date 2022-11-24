@@ -1,5 +1,6 @@
 package com.kideveloper_dart.my_spring_web.dart.presentation;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.kideveloper_dart.my_spring_web.dart.application.DartService;
 import com.kideveloper_dart.my_spring_web.dart.application.dto.request.DartDocsRequestDTO;
 import com.kideveloper_dart.my_spring_web.dart.application.dto.response.DartDocsResponseDTO;
@@ -17,7 +18,7 @@ public class DartController {
     private final DartService dartService;
 
     @GetMapping
-    public String showDocumentsTables(DartDocsRequest dartDocsRequest) {
+    public String showDocumentsTables(DartDocsRequest dartDocsRequest){
 
         DartDocsRequestDTO dartDocsRequestDTO = DartDocsRequestDTO.builder()
                 .stockCode(dartDocsRequest.getStock_code())
