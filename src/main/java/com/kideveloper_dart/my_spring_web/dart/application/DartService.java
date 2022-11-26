@@ -6,6 +6,8 @@ import com.kideveloper_dart.my_spring_web.dart.application.dto.request.CompanyDT
 import com.kideveloper_dart.my_spring_web.dart.application.dto.request.DartDocsRequestDTO;
 import com.kideveloper_dart.my_spring_web.dart.application.dto.request.FinancialStatementsDTO;
 import com.kideveloper_dart.my_spring_web.dart.application.dto.response.DartDocsResponseDTO;
+import com.kideveloper_dart.my_spring_web.dart.domain.company.Company;
+import com.kideveloper_dart.my_spring_web.dart.domain.repository.CompanyRepository;
 import com.kideveloper_dart.my_spring_web.dart.infrastructure.DartAPI;
 import com.kideveloper_dart.my_spring_web.dart.infrastructure.dto.request.OpenDartRequestDTO;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,8 @@ public class DartService {
 
     private final DartAPI dartAPI;
 
+    private final CompanyRepository companyRepository;
+
     @Transactional
     public DartDocsResponseDTO getDocs(DartDocsRequestDTO dartDocsRequestDTO){
 
@@ -30,6 +34,10 @@ public class DartService {
                 .bsnsYear(String.valueOf(dartDocsRequestDTO.getBusinessYear()))
                 .fsDiv(dartDocsRequestDTO.getFinancialStatDiv())
                 .build();
+
+        String corpCode = dartDocsRequestDTO.getCorpCode();
+        Company company = companyRepository.findCompanyByCorpCode(corpCode);
+
         List financialStatementsDTOs = new ArrayList<>();
         dartAPI.callAPI(openDartRequestDTO).forEach(apiFinStatsDTO -> {
             financialStatementsDTOs.add(FinancialStatementsDTO.from(apiFinStatsDTO));
