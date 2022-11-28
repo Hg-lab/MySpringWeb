@@ -2,6 +2,7 @@ package com.kideveloper_dart.my_spring_web.dart.domain.documentation;
 
 
 import com.kideveloper_dart.my_spring_web.dart.domain.company.Company;
+import com.kideveloper_dart.my_spring_web.dart.domain.doctype.DocumentationType;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -26,7 +27,8 @@ public class Documentation {
     private Integer businessYear;
 
     @Column
-    private String financialStatDiv;
+    @Enumerated(EnumType.STRING)
+    private DocumentationType documentationType;
 
     @CreatedDate
     private LocalDateTime createdDate;
@@ -34,10 +36,10 @@ public class Documentation {
     @LastModifiedDate
     private LocalDateTime modifiedDate;
 
-    public Documentation(Company company, Integer businessYear, String financialStatDiv) {
+    public Documentation(Company company, Integer businessYear, DocumentationType documentationType) {
         this.company = company;
         this.businessYear = businessYear;
-        this.financialStatDiv = financialStatDiv;
+        this.documentationType = documentationType;
     }
 
     public Documentation() {

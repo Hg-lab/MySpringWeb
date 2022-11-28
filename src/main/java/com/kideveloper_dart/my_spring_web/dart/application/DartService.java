@@ -7,6 +7,7 @@ import com.kideveloper_dart.my_spring_web.dart.application.dto.request.DartDocsR
 import com.kideveloper_dart.my_spring_web.dart.application.dto.request.FinancialStatementsDTO;
 import com.kideveloper_dart.my_spring_web.dart.application.dto.response.DartDocsResponseDTO;
 import com.kideveloper_dart.my_spring_web.dart.domain.company.Company;
+import com.kideveloper_dart.my_spring_web.dart.domain.doctype.DocumentationType;
 import com.kideveloper_dart.my_spring_web.dart.domain.documentation.Documentation;
 import com.kideveloper_dart.my_spring_web.dart.domain.repository.CompanyRepository;
 import com.kideveloper_dart.my_spring_web.dart.domain.repository.DocumentationRepository;
@@ -46,7 +47,7 @@ public class DartService {
         // Company company = ?
         DartDocsResponseDTO dartDocsResponseDTO = DartDocsResponseDTO.builder().build();
 
-        Documentation documentation = new Documentation(company, dartDocsRequestDTO.getBusinessYear(), "SCE");
+        Documentation documentation = new Documentation(company, dartDocsRequestDTO.getBusinessYear(), DocumentationType.SCE);
         documentationRepository.save(documentation);
 
         return dartDocsResponseDTO;

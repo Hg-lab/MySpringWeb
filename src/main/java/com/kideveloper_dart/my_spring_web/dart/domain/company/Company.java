@@ -1,7 +1,10 @@
 package com.kideveloper_dart.my_spring_web.dart.domain.company;
 
+import com.kideveloper_dart.my_spring_web.dart.domain.documentation.Documentation;
+
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Company {
@@ -22,4 +25,7 @@ public class Company {
 
     @Column
     private Date modifyDate;
+
+    @OneToMany(mappedBy = "company")
+    private List<Documentation> docs;
 }
