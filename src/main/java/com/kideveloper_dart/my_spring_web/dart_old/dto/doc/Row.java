@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @Data
@@ -17,6 +18,13 @@ public class Row implements Comparable{
     private Integer term;
 
     private final List<Cell> cells = new ArrayList<>();
+
+    public static Row getRow(LinkedHashMap<String, String> dataMap) {
+        return Row.builder()
+                .docType(DocType.valueOf(dataMap.get("sj_div")))
+                .order(Integer.valueOf(dataMap.get("ord")))
+                .rowName(dataMap.get("account_nm")).build();
+    }
 
     public Row deepCopy() {
         Row newRow = Row.builder()

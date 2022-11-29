@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,6 +14,7 @@ public class Column implements Comparable<Column>{
 
     private final String id = UUID.randomUUID().toString();
     private String columnName;
+    private Integer term;
     private Integer order;
     private Boolean isRootColumn;
     private Column parentColumn;
@@ -20,16 +22,25 @@ public class Column implements Comparable<Column>{
     private Integer depth;
 
 
-    public Column deepCopy() {
-        Column newColumn = Column.builder()
-                .columnName(this.columnName)
-                .order(this.order)
-                .isRootColumn(this.isRootColumn)
-                .parentColumn(this.parentColumn)
-                .depth(this.depth).build();
+    public static Column getThisTermColumn(LinkedHashMap<String, String> dataMap) {
+        return Column.builder()
+                .columnName(dataMap.get("thstrm_nm"))
+                .order(0)
+                .build();
+    }
 
-        return newColumn;
+    public static Column getFromTermColumn(LinkedHashMap<String, String> dataMap) {
+        return Column.builder()
+                .columnName(dataMap.get("frmtrm_nm"))
+                .order(1)
+                .build();
+    }
 
+    public static Column getBeforeFromTermColumn(LinkedHashMap<String, String> dataMap) {
+        return Column.builder()
+                .columnName(dataMap.get("bfefrmtrm_nm"))
+                .order(2)
+                .build();
     }
 
     // 중복검사를 위해 VO로 구현, HashSet 에서는 hashCode 로 중복체크한다

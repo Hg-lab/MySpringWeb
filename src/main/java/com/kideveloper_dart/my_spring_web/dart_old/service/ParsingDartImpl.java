@@ -58,20 +58,9 @@ public class ParsingDartImpl implements ParsingDart {
         DocType docType = DocType.valueOf(dataMap.get("sj_div"));
 
         // generating Columns
-        Column thisTermColumn = Column.builder()
-                    .columnName(dataMap.get("thstrm_nm"))
-                    .order(0)
-                    .build();
-
-        Column fromTermColumn = Column.builder()
-                .columnName(dataMap.get("frmtrm_nm"))
-                .order(1)
-                .build();
-
-        Column beforeFromTermColumn = Column.builder()
-                .columnName(dataMap.get("bfefrmtrm_nm"))
-                .order(2)
-                .build();
+        Column thisTermColumn = Column.getThisTermColumn(dataMap);
+        Column fromTermColumn = Column.getFromTermColumn(dataMap);
+        Column beforeFromTermColumn = Column.getBeforeFromTermColumn(dataMap);
 
         if(response.get(docType).getColumns().isEmpty()) {
             response.get(docType).getColumns().add(thisTermColumn);
@@ -80,34 +69,19 @@ public class ParsingDartImpl implements ParsingDart {
         }
 
         // generating Row
-        Row row = Row.builder()
-                .docType(DocType.valueOf(dataMap.get("sj_div")))
-                .order(Integer.valueOf(dataMap.get("ord")))
-                .rowName(dataMap.get("account_nm")).build();
-
+        Row row = Row.getRow(dataMap);
         response.get(docType).getRows().add(row);
 
-        // generating Cell
-        Cell thisCell = Cell.builder()
-                .value(dataMap.get("thstrm_amount"))
-                .column(thisTermColumn)
-                .build();
-        Cell fromCell = Cell.builder()
-                .value(dataMap.get("frmtrm_amount"))
-                .column(fromTermColumn)
-                .build();
-        Cell beforeFromCell = Cell.builder()
-                .value(dataMap.get("bfefrmtrm_amount"))
-                .column(beforeFromTermColumn)
-                .build();
+        // generating Cells
+        Cell thisCell = Cell.getThisTermCell(dataMap, thisTermColumn);
+        Cell fromCell = Cell.getFromTermCell(dataMap, fromTermColumn);
+        Cell beforeFromCell = Cell.getBeforeFromTermCell(dataMap, fromTermColumn);
 
         row.getCells().add(thisCell);
         row.getCells().add(fromCell);
         row.getCells().add(beforeFromCell);
-
     }
     private void writeSCEDoc(LinkedHashMap<String, String> dataMap) {
-        System.out.println("dataMap = " + dataMap);
 
         // TODO: 2022/11/02 정규표현식
         String accountDetail = dataMap.get("account_detail");
