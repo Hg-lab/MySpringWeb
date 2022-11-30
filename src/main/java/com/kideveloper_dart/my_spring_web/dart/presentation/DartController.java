@@ -7,6 +7,7 @@ import com.kideveloper_dart.my_spring_web.dart.application.dto.response.DartDocs
 import com.kideveloper_dart.my_spring_web.dart.presentation.dto.request.DartDocsRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -18,7 +19,7 @@ public class DartController {
     private final DartService dartService;
 
     @GetMapping
-    public String showDocumentsTables(DartDocsRequest dartDocsRequest){
+    public String showDocumentsTables(Model model, DartDocsRequest dartDocsRequest){
 
         DartDocsRequestDTO dartDocsRequestDTO = DartDocsRequestDTO.builder()
                 .stockCode(dartDocsRequest.getStock_code())
@@ -26,8 +27,14 @@ public class DartController {
                 .businessYear(dartDocsRequest.getBsns_year())
                 .financialStatDiv(dartDocsRequest.getFs_div())
                 .build();
-        DartDocsResponseDTO docsResponseDTO = dartService.getDocs(dartDocsRequestDTO);
+        try {
+            DartDocsResponseDTO docsResponseDTO = dartService.getDocs(dartDocsRequestDTO);
+        } catch (Exception e) {
+            model.addAttribute("status", "fail");
+            return "dart/dart";
+        }
 
+        model.addAttribute("status", "ok");
         return "dart/dart";
     }
 }

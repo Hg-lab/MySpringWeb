@@ -16,6 +16,9 @@ public class OpenDartRequestDTO {
     private String bsnsYear;
     private String fsDiv;
 
+    public void setCorpCode(String corpCode) {
+        this.corpCode = corpCode;
+    }
 
     public static OpenDartRequestDTO from(DartDocsRequestDTO dartDocsRequestDTO) {
         return new OpenDartRequestDTO(

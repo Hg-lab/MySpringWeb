@@ -3,6 +3,7 @@ package com.kideveloper_dart.my_spring_web.dart.application.dto.request;
 import com.kideveloper_dart.my_spring_web.dart.infrastructure.dto.response.APIFinStatsDTO;
 import lombok.*;
 
+@ToString
 @Getter
 @Builder
 @AllArgsConstructor
