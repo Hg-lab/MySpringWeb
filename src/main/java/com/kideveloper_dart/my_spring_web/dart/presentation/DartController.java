@@ -1,6 +1,5 @@
 package com.kideveloper_dart.my_spring_web.dart.presentation;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.kideveloper_dart.my_spring_web.dart.application.DartService;
 import com.kideveloper_dart.my_spring_web.dart.application.dto.request.DartDocsRequestDTO;
 import com.kideveloper_dart.my_spring_web.dart.application.dto.response.DartDocsResponseDTO;
@@ -30,6 +29,7 @@ public class DartController {
         try {
             DartDocsResponseDTO docsResponseDTO = dartService.getDocs(dartDocsRequestDTO);
         } catch (Exception e) {
+            e.printStackTrace();
             model.addAttribute("status", "fail");
             return "dart/dart";
         }
