@@ -1,10 +1,10 @@
 package com.kideveloper_dart.my_spring_web.dart.application;
 
-import com.kideveloper_dart.my_spring_web.dart.application.dto.request.FinancialStatementsDTO;
 import com.kideveloper_dart.my_spring_web.dart.domain.cell.Cell;
 import com.kideveloper_dart.my_spring_web.dart.domain.column.ColumnHead;
 import com.kideveloper_dart.my_spring_web.dart.domain.doctype.DocumentationType;
 import com.kideveloper_dart.my_spring_web.dart.domain.row.RowHead;
+import com.kideveloper_dart.my_spring_web.dart.infrastructure.dto.response.APIFinStatsDTO;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -14,17 +14,17 @@ import java.util.List;
 @Component
 public class DartDataParser {
 
-    public List<Cell> parse(List<FinancialStatementsDTO> financialStatementsDTOS) {
+    public List<Cell> parse(List<APIFinStatsDTO> APIFinStatsDTOList) {
         List<Cell> cells =new ArrayList<>();
-        for (FinancialStatementsDTO financialStatementsDTO : financialStatementsDTOS) {
-            if (DocumentationType.valueOf(financialStatementsDTO.getSj_div()) == DocumentationType.BS) {
-                parseCells(financialStatementsDTO, cells);
+        for (APIFinStatsDTO apiFinStatsDTO : APIFinStatsDTOList) {
+            if (DocumentationType.valueOf(apiFinStatsDTO.getSj_div()) == DocumentationType.BS) {
+                parseCells(apiFinStatsDTO, cells);
             }
         }
         return cells;
     }
 
-    private void parseCells(FinancialStatementsDTO dto, List<Cell> cells) {
+    private void parseCells(APIFinStatsDTO dto, List<Cell> cells) {
 //        final String THIS_TERM_KEY = "thisTerm";
 //        final String FROM_TERM_KEY = "thisTerm";
 //        final String BEFORE_TERM_KEY = "thisTerm";

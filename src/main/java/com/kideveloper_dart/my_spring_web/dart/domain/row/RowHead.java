@@ -1,6 +1,6 @@
 package com.kideveloper_dart.my_spring_web.dart.domain.row;
 
-import com.kideveloper_dart.my_spring_web.dart.application.dto.request.FinancialStatementsDTO;
+import com.kideveloper_dart.my_spring_web.dart.infrastructure.dto.response.APIFinStatsDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -28,7 +28,7 @@ public class RowHead {
     @Column
     private Integer rowOrder;
 
-    public static RowHead getRowHeadByDTO(FinancialStatementsDTO dto, String term) {
+    public static RowHead getRowHeadByDTO(APIFinStatsDTO dto, String term) {
 
         Map<String, Integer> termMap = new HashMap<String, Integer>(){{
             put("thisTerm", Integer.parseInt(dto.getThstrm_nm().replaceAll("[^0-9]", "")));

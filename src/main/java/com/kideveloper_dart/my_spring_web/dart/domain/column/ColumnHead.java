@@ -1,6 +1,6 @@
 package com.kideveloper_dart.my_spring_web.dart.domain.column;
 
-import com.kideveloper_dart.my_spring_web.dart.application.dto.request.FinancialStatementsDTO;
+import com.kideveloper_dart.my_spring_web.dart.infrastructure.dto.response.APIFinStatsDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -28,7 +28,7 @@ public class ColumnHead {
     @Column
     private Integer columnOrder;
 
-    public static ColumnHead getColumnHeadByDTO(FinancialStatementsDTO dto, String term) {
+    public static ColumnHead getColumnHeadByDTO(APIFinStatsDTO dto, String term) {
 
         Map<String, String> termColumnHeadMap = new HashMap<String, String>(){{
             put("thisTerm", dto.getThstrm_nm());

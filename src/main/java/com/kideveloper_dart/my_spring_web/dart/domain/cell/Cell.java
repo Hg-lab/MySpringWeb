@@ -1,13 +1,14 @@
 package com.kideveloper_dart.my_spring_web.dart.domain.cell;
 
-import com.kideveloper_dart.my_spring_web.dart.application.dto.request.FinancialStatementsDTO;
 import com.kideveloper_dart.my_spring_web.dart.domain.column.ColumnHead;
 import com.kideveloper_dart.my_spring_web.dart.domain.documentation.Documentation;
 import com.kideveloper_dart.my_spring_web.dart.domain.row.RowHead;
+import com.kideveloper_dart.my_spring_web.dart.infrastructure.dto.response.APIFinStatsDTO;
 import lombok.*;
 
 import javax.persistence.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Getter @Setter
@@ -27,7 +28,7 @@ public class Cell {
     @Column
     private Integer term;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "documentation_id")
     private Documentation documentation;
 
@@ -40,8 +41,7 @@ public class Cell {
     private ColumnHead columnHead;
 
 
-    // TODO: 2022/11/29 term별로 cell리턴
-    public static Cell getCellByDTO(FinancialStatementsDTO dto, String term) {
+    public static Cell getCellByDTO(APIFinStatsDTO dto, String term) {
         Map<String, String> termAmountMap = new HashMap<String, String>(){{
             put("thisTerm", dto.getThstrm_amount());
             put("fromTerm", dto.getFrmtrm_amount());
