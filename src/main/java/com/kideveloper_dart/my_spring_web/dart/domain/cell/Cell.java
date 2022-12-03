@@ -32,6 +32,7 @@ public class Cell {
     @JoinColumn(name = "documentation_id")
     private Documentation documentation;
 
+    // TODO: 2022/12/01 column, row save 시 exception 발생해도 cell 롤백되지않음 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "row_id")
     private RowHead rowHead;

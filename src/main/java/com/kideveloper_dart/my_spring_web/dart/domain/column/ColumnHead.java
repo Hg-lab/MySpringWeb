@@ -3,14 +3,18 @@ package com.kideveloper_dart.my_spring_web.dart.domain.column;
 import com.kideveloper_dart.my_spring_web.dart.infrastructure.dto.response.APIFinStatsDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @Entity
 @Builder
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ColumnHead {
@@ -54,5 +58,24 @@ public class ColumnHead {
 
     public static class ColumnCreator{
         // Row newRow = Row.NewRowFrom(rowDTO); 와 같은 방식으로 생성
+    }
+
+    @Override
+    public int hashCode() {
+        if(this.getId() == null) return Objects.hash(name, term, columnOrder);
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) return true;
+        if(obj == null || Hibernate.getClass(this) != Hibernate.getClass(obj)) return false;
+
+        ColumnHead columnHead = (ColumnHead) obj;
+        if(this.getName() == columnHead.getName() &&
+                this.getTerm() == columnHead.getTerm() &&
+                this.getColumnOrder() == columnHead.getColumnOrder()) return true;
+
+        return super.equals(obj);
     }
 }
