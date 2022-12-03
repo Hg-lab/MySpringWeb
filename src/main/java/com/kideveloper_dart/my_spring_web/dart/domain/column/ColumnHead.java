@@ -72,7 +72,7 @@ public class ColumnHead {
         if(obj == null || Hibernate.getClass(this) != Hibernate.getClass(obj)) return false;
 
         ColumnHead columnHead = (ColumnHead) obj;
-        if(this.getName() == columnHead.getName() &&
+        if(this.getName().equals(columnHead.getName()) &&
                 this.getTerm() == columnHead.getTerm() &&
                 this.getColumnOrder() == columnHead.getColumnOrder()) return true;
 

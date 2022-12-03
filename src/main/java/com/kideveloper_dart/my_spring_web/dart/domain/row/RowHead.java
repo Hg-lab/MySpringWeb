@@ -1,14 +1,17 @@
 package com.kideveloper_dart.my_spring_web.dart.domain.row;
 
+import com.kideveloper_dart.my_spring_web.dart.domain.column.ColumnHead;
 import com.kideveloper_dart.my_spring_web.dart.infrastructure.dto.response.APIFinStatsDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 
 @Entity
@@ -51,5 +54,25 @@ public class RowHead {
 
     public static class RowCreator{
         // Row newRow = Row.NewRowFrom(rowDTO); 와 같은 방식으로 생성
+    }
+
+
+    @Override
+    public int hashCode() {
+        if(this.getId() == null) return Objects.hash(name, term, rowOrder);
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) return true;
+        if(obj == null || Hibernate.getClass(this) != Hibernate.getClass(obj)) return false;
+
+        RowHead rowHead = (RowHead) obj;
+        if(this.getName().equals(rowHead.getName()) &&
+                this.getTerm() == rowHead.getTerm() &&
+                this.getRowOrder() == rowHead.getRowOrder()) return true;
+
+        return super.equals(obj);
     }
 }
