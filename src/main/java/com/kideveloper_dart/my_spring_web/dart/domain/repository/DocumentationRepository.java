@@ -14,4 +14,6 @@ public interface DocumentationRepository extends JpaRepository<Documentation, Lo
     List<Documentation> findByCompany(Company company);
 
     boolean existsByCompanyAndBusinessYear(Company company, Integer businessYear);
+
+    Documentation findByCompanyAndAndBusinessYear(Company company, Integer businessYear);
 }
