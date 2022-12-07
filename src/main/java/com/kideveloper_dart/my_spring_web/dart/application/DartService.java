@@ -3,6 +3,7 @@ package com.kideveloper_dart.my_spring_web.dart.application;
 
 import com.kideveloper_dart.my_spring_web.dart.application.dto.request.DartDocsRequestDTO;
 import com.kideveloper_dart.my_spring_web.dart.application.dto.response.DartDocsResponseDTO;
+import com.kideveloper_dart.my_spring_web.dart.domain.TableAssembler;
 import com.kideveloper_dart.my_spring_web.dart.domain.cell.Cell;
 import com.kideveloper_dart.my_spring_web.dart.domain.company.Company;
 import com.kideveloper_dart.my_spring_web.dart.domain.doctype.DocumentationType;
@@ -16,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -26,6 +26,7 @@ public class DartService {
 
     private final DartAPI dartAPI;
     private final DartDataParser dartDataParser;
+    private final TableAssembler tableAssembler;
 
     private final CompanyRepository companyRepository;
     private final DocumentationRepository documentationRepository;
@@ -38,29 +39,35 @@ public class DartService {
         Integer businessYear = dartDocsRequestDTO.getBusinessYear();
 
         // 요청한적 있는 documentation은 바로 조회
-        if(!documentationRepository
-                .existsByCompanyAndBusinessYear(company,businessYear)) {
-            DartDocsResponseDTO dartDocsResponseDTO = DartDocsResponseDTO.builder().build();
-            return dartDocsResponseDTO;
+        if (documentationRepository
+                .existsByCompanyAndBusinessYear(company, businessYear)) {
+            Documentation documentation = documentationRepository
+                    .findByCompanyAndAndBusinessYear(company, businessYear);
+            List<Cell> cells = cellRepository.findByDocumentation(documentation);
+            return tableAssembler.assembleTableByCells(cells);
         }
 
         OpenDartRequestDTO openDartRequestDTO = OpenDartRequestDTO.from(dartDocsRequestDTO);
         openDartRequestDTO.setCorpCode(company.getCorpCode());
         List APIFinStatsDTOList = dartAPI.callAPI(openDartRequestDTO);
+
         List<Cell> cells = dartDataParser.parse(APIFinStatsDTOList);
 
-        Documentation documentation =
-                new Documentation(company, dartDocsRequestDTO.getBusinessYear(), DocumentationType.BS);
-        for (int idx = 0; idx < cells.size(); idx++) {
-            Cell cell = cells.get(idx);
-            cell.setDocumentation(documentation);
-            Cell savedCell = cellRepository.save(cell);
-            cells.set(idx, savedCell);
+        Documentation documentation = Documentation.builder()
+                .company(company)
+                .businessYear(businessYear)
+                .documentationType(DocumentationType.BS)
+                .cells(cells)
+                .build();
 
-        }
+        Documentation savedDocumentation = documentationRepository.save(documentation);
 
-        DartDocsResponseDTO dartDocsResponseDTO = DartDocsResponseDTO.builder().build();
-        return dartDocsResponseDTO;
+        cells.stream().forEach(cell -> {
+            cell.setDocumentation(savedDocumentation);
+            cellRepository.save(cell);
+        });
+
+        return tableAssembler.assembleTableByCells(cells);
     }
 
 }

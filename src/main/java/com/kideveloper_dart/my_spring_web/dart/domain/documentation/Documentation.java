@@ -4,6 +4,7 @@ package com.kideveloper_dart.my_spring_web.dart.domain.documentation;
 import com.kideveloper_dart.my_spring_web.dart.domain.cell.Cell;
 import com.kideveloper_dart.my_spring_web.dart.domain.company.Company;
 import com.kideveloper_dart.my_spring_web.dart.domain.doctype.DocumentationType;
+import lombok.*;
 import org.springframework.context.expression.CachedExpressionEvaluator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -15,6 +16,8 @@ import java.util.List;
 
 @EntityListeners(AuditingEntityListener.class)
 @Entity
+@Builder
+@AllArgsConstructor
 public class Documentation {
 
     @Id
@@ -39,15 +42,10 @@ public class Documentation {
     private LocalDateTime modifiedDate;
 
     @OneToMany(mappedBy = "documentation")
-    private List<Cell> cell;
-
-    public Documentation(Company company, Integer businessYear, DocumentationType documentationType) {
-        this.company = company;
-        this.businessYear = businessYear;
-        this.documentationType = documentationType;
-    }
+    private List<Cell> cells;
 
     public Documentation() {
 
     }
+
 }
