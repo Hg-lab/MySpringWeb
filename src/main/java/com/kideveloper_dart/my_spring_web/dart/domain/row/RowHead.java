@@ -34,6 +34,17 @@ public class RowHead {
     @Column
     private Integer rowOrder;
 
+    public static RowHead getRowHeadByDTO(APIFinStatsDTO dto) {
+
+        String rowHeadName = dto.getAccount_nm();
+        Integer rowOrder = Integer.parseInt(dto.getOrd());
+
+        return RowHead.builder()
+                .name(rowHeadName)
+                .rowOrder(rowOrder).build();
+    }
+
+
     public static RowHead getRowHeadByDTO(APIFinStatsDTO dto, String term) {
 
         Map<String, Integer> termMap = new HashMap<String, Integer>(){{
@@ -44,6 +55,7 @@ public class RowHead {
 
         String rowHeadName = dto.getAccount_nm();
         Integer rowTerm = termMap.get(term);
+        rowTerm = null;
         Integer rowOrder = Integer.parseInt(dto.getOrd());
 
         return RowHead.builder()

@@ -1,9 +1,6 @@
 package com.kideveloper_dart.my_spring_web.dart.infrastructure.dto.request;
 
 import com.kideveloper_dart.my_spring_web.dart.application.dto.request.DartDocsRequestDTO;
-import com.kideveloper_dart.my_spring_web.dart.application.dto.request.FinancialStatementsDTO;
-import com.kideveloper_dart.my_spring_web.dart.infrastructure.dto.response.APIFinStatsDTO;
-import com.kideveloper_dart.my_spring_web.dart_old.dto.DartRequestDTO;
 import lombok.*;
 
 @Getter

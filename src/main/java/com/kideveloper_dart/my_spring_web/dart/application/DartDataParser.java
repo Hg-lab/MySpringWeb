@@ -5,45 +5,113 @@ import com.kideveloper_dart.my_spring_web.dart.domain.column.ColumnHead;
 import com.kideveloper_dart.my_spring_web.dart.domain.doctype.DocumentationType;
 import com.kideveloper_dart.my_spring_web.dart.domain.row.RowHead;
 import com.kideveloper_dart.my_spring_web.dart.infrastructure.dto.response.APIFinStatsDTO;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 
 @Component
+@Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class DartDataParser {
+    private static final String THIS_TERM_KEY = "thisTerm";
+    private static final String FROM_TERM_KEY = "fromTerm";
+    private static final String BEFORE_FROM_TERM_KEY = "beforeFromTerm";
 
+    private Integer thisTerm;
+    private Map<String, Integer> termMap = new HashMap<>();
+
+    private List<Cell> cells = new ArrayList<>();
+    private Set<ColumnHead> columns = new HashSet<>();
+    private Set<RowHead> rows = new HashSet<>();
+
+    // TODO: 2022/12/03 loop 1번으로 parseColumn parseRow parseCells
     public List<Cell> parse(List<APIFinStatsDTO> APIFinStatsDTOList) {
-        List<Cell> cells =new ArrayList<>();
-        for (APIFinStatsDTO apiFinStatsDTO : APIFinStatsDTOList) {
-            if (DocumentationType.valueOf(apiFinStatsDTO.getSj_div()) == DocumentationType.BS) {
-                parseCells(apiFinStatsDTO, cells);
+
+        for (APIFinStatsDTO dto : APIFinStatsDTOList) {
+            if (DocumentationType.valueOf(dto.getSj_div()) == DocumentationType.BS) {
+                setThisTerm(dto);
+                parseColumns(dto);
+                parseRows(dto);
+                parseCells(dto);
             }
         }
         return cells;
     }
 
-    private void parseCells(APIFinStatsDTO dto, List<Cell> cells) {
-//        final String THIS_TERM_KEY = "thisTerm";
-//        final String FROM_TERM_KEY = "thisTerm";
-//        final String BEFORE_TERM_KEY = "thisTerm";
+    private void setThisTerm(APIFinStatsDTO apiFinStatsDTO) {
+        if(thisTerm == null) {
+            thisTerm = Integer.parseInt(apiFinStatsDTO.getThstrm_nm().replaceAll("[^0-9]", ""));
 
-        Cell thisTermCell = Cell.getCellByDTO(dto, "thisTerm");
-        thisTermCell.setColumnHead(ColumnHead.getColumnHeadByDTO(dto, "thisTerm"));
-        thisTermCell.setRowHead(RowHead.getRowHeadByDTO(dto,"thisTerm"));
+            termMap.put(THIS_TERM_KEY, thisTerm);
+            termMap.put(FROM_TERM_KEY, thisTerm - 1);
+            termMap.put(BEFORE_FROM_TERM_KEY, thisTerm - 2);
+        }
+    }
 
-        Cell fromTermCell = Cell.getCellByDTO(dto, "fromTerm");
-        fromTermCell.setColumnHead(ColumnHead.getColumnHeadByDTO(dto, "fromTerm"));
-        fromTermCell.setRowHead(RowHead.getRowHeadByDTO(dto,"fromTerm"));
+    private void parseColumns(APIFinStatsDTO dto) {
+        columns.add(ColumnHead.getColumnHeadByDTO(dto, THIS_TERM_KEY));
+        columns.add(ColumnHead.getColumnHeadByDTO(dto, FROM_TERM_KEY));
+        columns.add(ColumnHead.getColumnHeadByDTO(dto, BEFORE_FROM_TERM_KEY));
+    }
 
-        Cell beforeFromTermCell = Cell.getCellByDTO(dto, "beforeFromTerm");
-        beforeFromTermCell.setColumnHead(ColumnHead.getColumnHeadByDTO(dto, "beforeFromTerm"));
-        beforeFromTermCell.setRowHead(RowHead.getRowHeadByDTO(dto,"beforeFromTerm"));
+    private void parseRows(APIFinStatsDTO dto) {
+        rows.add(RowHead.getRowHeadByDTO(dto));
+    }
+
+
+    private void parseCells(APIFinStatsDTO dto) {
+        Integer rowOrder = Integer.valueOf(dto.getOrd());
+
+        Cell thisTermCell = parseEachTermCell(dto, THIS_TERM_KEY, rowOrder);
+        Cell fromTermCell = parseEachTermCell(dto, FROM_TERM_KEY, rowOrder);
+        Cell beforeFromTermCell = parseEachTermCell(dto, BEFORE_FROM_TERM_KEY, rowOrder);
 
         cells.add(thisTermCell);
         cells.add(fromTermCell);
         cells.add(beforeFromTermCell);
     }
+
+    private Cell parseEachTermCell(APIFinStatsDTO dto, String termKey, Integer rowOrder) {
+        Cell thisTermCell = Cell.getCellByDTO(dto, termKey);
+        thisTermCell.setColumnHead(getColumnHeadForTargetTerm(termKey));
+        thisTermCell.setRowHead(getRowHeadByOrder(rowOrder));
+        return thisTermCell;
+    }
+
+    private ColumnHead getColumnHeadForTargetTerm(String targetTermKey) {
+        ColumnHead resColumnHead = null;
+        for (ColumnHead columnHead : columns) {
+            if(columnHead.getTerm() == termMap.get(targetTermKey)) {
+                resColumnHead = columnHead;
+                break;
+            }
+        }
+        return resColumnHead;
+    }
+
+    private RowHead getRowHeadByOrder(Integer rowOrder) {
+        RowHead resRowHead = null;
+        for (RowHead rowHead : rows) {
+            if(rowHead.getRowOrder() == rowOrder) {
+                resRowHead = rowHead;
+                break;
+            }
+        }
+        return resRowHead;
+    }
+
+    private RowHead getRowHeadForTargetTerm(String targetTermKey) {
+        RowHead resRowHead = null;
+        for (RowHead rowHead : rows) {
+            if(rowHead.getTerm() == termMap.get(targetTermKey)) {
+                resRowHead = rowHead;
+                break;
+            }
+        }
+        return resRowHead;
+    }
+
 
 }
