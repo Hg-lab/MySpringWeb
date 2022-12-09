@@ -13,6 +13,7 @@ import com.kideveloper_dart.my_spring_web.dart.domain.repository.CompanyReposito
 import com.kideveloper_dart.my_spring_web.dart.domain.repository.DocumentationRepository;
 import com.kideveloper_dart.my_spring_web.dart.infrastructure.DartAPI;
 import com.kideveloper_dart.my_spring_web.dart.infrastructure.dto.request.OpenDartRequestDTO;
+import com.kideveloper_dart.my_spring_web.dart.infrastructure.dto.response.APIFinStatsDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,8 +40,7 @@ public class DartService {
         Integer businessYear = dartDocsRequestDTO.getBusinessYear();
 
         // 요청한적 있는 documentation은 바로 조회
-        if (documentationRepository
-                .existsByCompanyAndBusinessYear(company, businessYear)) {
+        if (canGetCells(company, businessYear)) {
             Documentation documentation = documentationRepository
                     .findByCompanyAndAndBusinessYear(company, businessYear);
             List<Cell> cells = cellRepository.findByDocumentation(documentation);
@@ -49,7 +49,7 @@ public class DartService {
 
         OpenDartRequestDTO openDartRequestDTO = OpenDartRequestDTO.from(dartDocsRequestDTO);
         openDartRequestDTO.setCorpCode(company.getCorpCode());
-        List APIFinStatsDTOList = dartAPI.callAPI(openDartRequestDTO);
+        List<APIFinStatsDTO> APIFinStatsDTOList = dartAPI.callAPI(openDartRequestDTO);
 
         List<Cell> cells = dartDataParser.parse(APIFinStatsDTOList);
 
@@ -68,6 +68,11 @@ public class DartService {
         });
 
         return tableAssembler.assembleTableByCells(cells);
+    }
+
+    private boolean canGetCells(Company company, Integer businessYear) {
+        return documentationRepository
+                .existsByCompanyAndBusinessYear(company, businessYear);
     }
 
 }
