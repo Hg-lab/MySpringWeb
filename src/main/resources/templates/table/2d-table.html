@@ -26,7 +26,7 @@
   <tbody>
   <tr th:each="row: ${rows}">
     <td th:text="${row.getKey().getRowName()}"></td>
-    <td th:each="column: ${columns}" th:text="${rows.get(row.getKey()).get(column)}"></td>
+    <td th:each="column: ${columns}" th:text="${rows.get(row.getKey()).get(column).getValue()}"></td>
   </tr>
   </tbody>
 </table>

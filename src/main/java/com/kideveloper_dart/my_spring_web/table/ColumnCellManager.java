@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class ColumnCellManager {
 
-    public static class ColumnCellMap extends HashMap<Object, Object> {
+    public static class ColumnCellMap extends HashMap<Object, Cell> {
     }
 
     public static ColumnCellMap createColumnCellMap() {
