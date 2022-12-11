@@ -1,6 +1,7 @@
 package com.kideveloper_dart.my_spring_web.dart.domain.repository;
 
 import com.kideveloper_dart.my_spring_web.dart.domain.company.Company;
+import com.kideveloper_dart.my_spring_web.dart.domain.doctype.DocumentationType;
 import com.kideveloper_dart.my_spring_web.dart.domain.documentation.Documentation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -13,7 +14,7 @@ public interface DocumentationRepository extends JpaRepository<Documentation, Lo
 
     List<Documentation> findByCompany(Company company);
 
-    boolean existsByCompanyAndBusinessYear(Company company, Integer businessYear);
+    boolean existsByCompanyAndBusinessYearAndDocumentationType(Company company, Integer businessYear, DocumentationType documentationType);
 
-    Documentation findByCompanyAndAndBusinessYear(Company company, Integer businessYear);
+    Documentation findByCompanyAndBusinessYearAndDocumentationType(Company company, Integer businessYear, DocumentationType documentationType);
 }

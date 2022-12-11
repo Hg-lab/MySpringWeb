@@ -60,8 +60,8 @@
     <div>
       <label for="doc_type">재무제표명</label>
       <select id="doc_type" name="doc_type" class="form-select">
-        <option value="" selected="selected">- 선택 -</option>
-        <option value="BS">재무상태표</option>
+        <option value="">- 선택 -</option>
+        <option value="BS" selected="selected">재무상태표</option>
         <option value="IS">손익계산서</option>
         <option value="CIS">포괄손익계산서</option>
         <option value="CF">현금흐름표</option>
@@ -98,7 +98,7 @@
     <tr th:each="row: ${data}">
       <td th:text="${row.getKey().getRowOrder()}"></td>
       <td th:text="${row.getKey().getName()}"></td>
-      <td th:each="column: ${columns}" th th:text="${data.get(row.getKey()).get(column).getValue()}"></td>
+      <td th:each="column: ${columns}" th:text="${data.get(row.getKey()).get(column).getValue()}"></td>
     </tr>
     </tbody>
   </table>

@@ -26,11 +26,10 @@ public class DartDataParser {
     private Set<ColumnHead> columns = new HashSet<>();
     private Set<RowHead> rows = new HashSet<>();
 
-    // TODO: 2022/12/03 loop 1번으로 parseColumn parseRow parseCells
-    public List<Cell> parse(List<APIFinStatsDTO> APIFinStatsDTOList) {
+    public List<Cell> parse(List<APIFinStatsDTO> apiFinStatsDTOList, DocumentationType documentationType) {
 
-        for (APIFinStatsDTO dto : APIFinStatsDTOList) {
-            if (DocumentationType.valueOf(dto.getSj_div()) == DocumentationType.BS) {
+        for (APIFinStatsDTO dto : apiFinStatsDTOList) {
+            if (DocumentationType.valueOf(dto.getSj_div()) == documentationType) {
                 setThisTerm(dto);
                 parseColumns(dto);
                 parseRows(dto);
@@ -101,17 +100,5 @@ public class DartDataParser {
         }
         return resRowHead;
     }
-
-    private RowHead getRowHeadForTargetTerm(String targetTermKey) {
-        RowHead resRowHead = null;
-        for (RowHead rowHead : rows) {
-            if(rowHead.getTerm() == termMap.get(targetTermKey)) {
-                resRowHead = rowHead;
-                break;
-            }
-        }
-        return resRowHead;
-    }
-
 
 }

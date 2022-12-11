@@ -38,31 +38,25 @@ public class DartService {
 
         Company company = companyRepository.findCompanyByStockCode(dartDocsRequestDTO.getStockCode());
         Integer businessYear = dartDocsRequestDTO.getBusinessYear();
+        DocumentationType documentationType = dartDocsRequestDTO.getDocumentationType();
 
         // 요청한적 있는 documentation은 바로 조회
-        if (canGetCells(company, businessYear)) {
-            Documentation documentation = documentationRepository
-                    .findByCompanyAndAndBusinessYear(company, businessYear);
-            List<Cell> cells = cellRepository.findByDocumentation(documentation);
+        if (canGetCells(company, businessYear, documentationType)) {
+            List<Cell> cells = getCellsFromDB(company, businessYear, documentationType);
             return tableAssembler.assembleTableByCells(cells);
         }
 
-        OpenDartRequestDTO openDartRequestDTO = OpenDartRequestDTO.from(dartDocsRequestDTO);
-        openDartRequestDTO.setCorpCode(company.getCorpCode());
-        List<APIFinStatsDTO> APIFinStatsDTOList = dartAPI.callAPI(openDartRequestDTO);
+        List<Cell> cells = getCellsFromAPI(dartDocsRequestDTO, company, documentationType);
 
-        List<Cell> cells = dartDataParser.parse(APIFinStatsDTOList);
-
-        Documentation documentation = Documentation.builder()
+        Documentation savedDocumentation = documentationRepository.save(
+                Documentation.builder()
                 .company(company)
                 .businessYear(businessYear)
-                .documentationType(DocumentationType.BS)
+                .documentationType(documentationType)
                 .cells(cells)
-                .build();
+                .build());
 
-        Documentation savedDocumentation = documentationRepository.save(documentation);
-
-        cells.stream().forEach(cell -> {
+        cells.forEach(cell -> {
             cell.setDocumentation(savedDocumentation);
             cellRepository.save(cell);
         });
@@ -70,9 +64,23 @@ public class DartService {
         return tableAssembler.assembleTableByCells(cells);
     }
 
-    private boolean canGetCells(Company company, Integer businessYear) {
+    private boolean canGetCells(Company company, Integer businessYear, DocumentationType documentationType) {
         return documentationRepository
-                .existsByCompanyAndBusinessYear(company, businessYear);
+                .existsByCompanyAndBusinessYearAndDocumentationType(company, businessYear, documentationType);
+    }
+
+    private List<Cell> getCellsFromDB(Company company, Integer businessYear, DocumentationType documentationType) {
+        Documentation documentation = documentationRepository
+                .findByCompanyAndBusinessYearAndDocumentationType(company, businessYear, documentationType);
+        return cellRepository.findByDocumentation(documentation);
+    }
+
+    private List<Cell> getCellsFromAPI(DartDocsRequestDTO dartDocsRequestDTO, Company company, DocumentationType documentationType) {
+        OpenDartRequestDTO openDartRequestDTO = OpenDartRequestDTO.from(dartDocsRequestDTO);
+        openDartRequestDTO.setCorpCode(company.getCorpCode());
+        List<APIFinStatsDTO> apiFinStatsDTOList = dartAPI.callAPI(openDartRequestDTO);
+
+        return dartDataParser.parse(apiFinStatsDTOList, documentationType);
     }
 
 }
