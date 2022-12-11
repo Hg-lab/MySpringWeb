@@ -11,8 +11,10 @@ import java.util.*;
 @Builder
 public class DartDocsResponseDTO {
 
-    private final List<ColumnHeadDTO> columnHeadDTOList = new ArrayList<>();
-    private final LinkedHashMap<RowHeadDTO, Map<ColumnHeadDTO, CellDTO>> rowColumnCellDTOMap = new LinkedHashMap<>();
+    private final PriorityQueue<ColumnHeadDTO> columnHeadDTOList
+            = new PriorityQueue<>(Comparator.comparing(ColumnHeadDTO::getColumnOrder));
+    private final TreeMap<RowHeadDTO, Map<ColumnHeadDTO, CellDTO>> rowColumnCellDTOMap
+            = new TreeMap<>(Comparator.comparing(RowHeadDTO::getRowOrder));
 
     public DartDocsResponseDTO() {
 

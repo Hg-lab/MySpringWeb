@@ -12,5 +12,6 @@ public class DartDocsRequest {
     private String corp_code;
     private Integer bsns_year;
     private String fs_div;
+    private String sj_div;
 
 }

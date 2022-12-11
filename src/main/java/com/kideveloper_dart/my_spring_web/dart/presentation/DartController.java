@@ -10,6 +10,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.*;
+
+import static com.kideveloper_dart.my_spring_web.dart.application.dto.response.DartDocsResponseDTO.*;
+
 @Controller
 @RequestMapping("/dart")
 @RequiredArgsConstructor
@@ -28,6 +32,11 @@ public class DartController {
                 .build();
         try {
             DartDocsResponseDTO docsResponseDTO = dartService.getDocs(dartDocsRequestDTO);
+            PriorityQueue<ColumnHeadDTO> columnHeadDTOList = docsResponseDTO.getColumnHeadDTOList();
+
+            Map<RowHeadDTO, Map<ColumnHeadDTO, CellDTO>> rowColumnCellDTOMap = docsResponseDTO.getRowColumnCellDTOMap();
+            model.addAttribute("columns", columnHeadDTOList);
+            model.addAttribute("data", rowColumnCellDTOMap);
         } catch (Exception e) {
             e.printStackTrace();
             model.addAttribute("status", "fail");

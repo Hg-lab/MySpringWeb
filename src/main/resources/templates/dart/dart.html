@@ -7,6 +7,14 @@
     .container {
       max-width: 560px;
     }
+    table {
+      width: 75%;
+      /*border: 1px solid #444444;*/
+      margin-left:1rem;
+    }
+    th, td {
+      border: 1px solid #444444;
+    }
   </style>
 </head>
 
@@ -24,6 +32,7 @@
       <label for="stock_code">종목코드</label>
       <input type="text" id="stock_code" name="stock_code" class="form-control" placeholder="이름을 입력하세요" value="005930">
     </div>
+
     <div>
       <label for="bsns_year">사업년도</label>
       <select id="bsns_year" name="bsns_year" class="form-select">
@@ -38,12 +47,25 @@
         <option value="2022" disabled="disabled">2022</option>
       </select>
     </div>
+
     <div>
       <label for="fs_div">별도/연결재무제표</label>
       <select id="fs_div" name="fs_div" class="form-select">
         <option value="">- 선택 -</option>
         <option value="OFS" selected="selected">재무제표</option>
         <option value="CFS">연결재무제표</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="doc_type">재무제표명</label>
+      <select id="doc_type" name="doc_type" class="form-select">
+        <option value="" selected="selected">- 선택 -</option>
+        <option value="BS">재무상태표</option>
+        <option value="IS">손익계산서</option>
+        <option value="CIS">포괄손익계산서</option>
+        <option value="CF">현금흐름표</option>
+        <option value="SCE">자본변동표</option>
       </select>
     </div>
 
@@ -61,8 +83,26 @@
   <h1>
     <span th:text="${status}">status</span>
   </h1>
+</div>
 
+<div>
+  <table class="table">
+    <thead>
+    <tr>
+      <th></th>
+      <th></th>
+      <th th:each="column: ${columns}" th:text="${column.getName()}">col1</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="row: ${data}">
+      <td th:text="${row.getKey().getRowOrder()}"></td>
+      <td th:text="${row.getKey().getName()}"></td>
+      <td th:each="column: ${columns}" th th:text="${data.get(row.getKey()).get(column).getValue()}"></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
 
-</div> <!-- /container -->
 </body>
 </html>
