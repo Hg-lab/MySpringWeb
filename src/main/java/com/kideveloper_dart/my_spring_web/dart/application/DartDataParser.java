@@ -28,6 +28,11 @@ public class DartDataParser {
 
     public List<Cell> parse(List<APIFinStatsDTO> apiFinStatsDTOList, DocumentationType documentationType) {
 
+        if(documentationType == DocumentationType.SCE) {
+            DartDataSCEParser dartDataSCEParser = new DartDataSCEParser();
+            return dartDataSCEParser.parseSCE(apiFinStatsDTOList);
+        }
+
         for (APIFinStatsDTO dto : apiFinStatsDTOList) {
             if (DocumentationType.valueOf(dto.getSj_div()) == documentationType) {
                 setThisTerm(dto);
